@@ -82,12 +82,15 @@ namespace PathToClipboard	// WHY: PathToClipboardExtension doesn't work
 		#endregion
 
 		#region Registration
-		static private string[] _filetypes = new string[] { "*", "Folder" };
+		/*
+			Use this instead of "*", "Folder".
+			Could also be "Directory" instead of "Folder".
+		 */
+		static private string[] _filetypes = new string[] { "AllFilesystemObjects" };
 
 		[System.Runtime.InteropServices.ComRegisterFunctionAttribute()]
 		static public void RegisterServer(Type t)
 		{
-			// could also be "Directory" instead of "Folder"
 			ShellExtension.ContextMenu.RegisterServerHelper(t, _filetypes);
 		}
 

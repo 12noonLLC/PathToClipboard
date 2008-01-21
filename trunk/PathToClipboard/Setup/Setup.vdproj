@@ -202,14 +202,14 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:PathToClipboard"
-        "ProductCode" = "8:{A7C805E0-38DC-49BD-A3A9-ED7EF10F6D98}"
-        "PackageCode" = "8:{76C66688-F102-4415-B3E2-F910BD87A1F8}"
-        "UpgradeCode" = "8:{43910EFA-13FE-4DB8-B6C9-5E5B516F219D}"
+        "ProductCode" = "8:{4EA82A50-4EC2-42A2-8969-78D313AE193F}"
+        "PackageCode" = "8:{3260941D-019B-4BB3-BCC2-947F532F51C6}"
+        "UpgradeCode" = "8:{CD10448D-7925-4F4E-AD20-3D1C23042273}"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:TRUE"
-        "ProductVersion" = "8:1.0.1"
+        "ProductVersion" = "8:1.0.2"
         "Manufacturer" = "8:12noon"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:http://www.12noon.com"
@@ -302,6 +302,70 @@
             {
                 "Keys"
                 {
+                    "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_E110DD8799544243B39FCCFF32F6983E"
+                    {
+                    "Name" = "8:AllFilesystemObjects"
+                    "Condition" = "8:"
+                    "AlwaysCreate" = "11:FALSE"
+                    "DeleteAtUninstall" = "11:FALSE"
+                    "Transitive" = "11:FALSE"
+                        "Keys"
+                        {
+                            "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_9652B5FE74374676B3130257E9764A2E"
+                            {
+                            "Name" = "8:shellex"
+                            "Condition" = "8:"
+                            "AlwaysCreate" = "11:FALSE"
+                            "DeleteAtUninstall" = "11:FALSE"
+                            "Transitive" = "11:FALSE"
+                                "Keys"
+                                {
+                                    "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_302BB8943FCA4B53A18FA7A9903B57EE"
+                                    {
+                                    "Name" = "8:ContextMenuHandlers"
+                                    "Condition" = "8:"
+                                    "AlwaysCreate" = "11:FALSE"
+                                    "DeleteAtUninstall" = "11:FALSE"
+                                    "Transitive" = "11:FALSE"
+                                        "Keys"
+                                        {
+                                            "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_D0EC366AA4E94F4E9D6F8ED41C36F24E"
+                                            {
+                                            "Name" = "8:PathToClipboard {2e820618-9430-421b-8fa5-12bd9e31eef3}"
+                                            "Condition" = "8:"
+                                            "AlwaysCreate" = "11:FALSE"
+                                            "DeleteAtUninstall" = "11:TRUE"
+                                            "Transitive" = "11:FALSE"
+                                                "Keys"
+                                                {
+                                                }
+                                                "Values"
+                                                {
+                                                    "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_C02CFE91A114442DB66D4E273CCE3E05"
+                                                    {
+                                                    "Name" = "8:"
+                                                    "Condition" = "8:"
+                                                    "Transitive" = "11:FALSE"
+                                                    "ValueTypes" = "3:1"
+                                                    "Value" = "8:{2e820618-9430-421b-8fa5-12bd9e31eef3}"
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        "Values"
+                                        {
+                                        }
+                                    }
+                                }
+                                "Values"
+                                {
+                                }
+                            }
+                        }
+                        "Values"
+                        {
+                        }
+                    }
                 }
             }
             "HKU"

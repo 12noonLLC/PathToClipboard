@@ -195,6 +195,7 @@ namespace ShellExtension
 		#region Registration
 		/*
 		 * These methods must be called by the derived class that is, ultimately, the extension.
+		 * They're invoked by regasm.exe.
 		 */
 
 		static protected void RegisterServerHelper(Type t, string[] filetypes)
