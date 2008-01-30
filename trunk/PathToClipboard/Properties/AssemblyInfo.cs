@@ -6,11 +6,11 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("PathToClipboard")]
-[assembly: AssemblyDescription("Copy selected files paths to clipboard")]
+[assembly: AssemblyDescription("Copy selected file paths to clipboard")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("12noon")]
 [assembly: AssemblyProduct("PathToClipboard")]
-[assembly: AssemblyCopyright("© 2007 12noon")]
+[assembly: AssemblyCopyright("© 2007-2008 12noon")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -31,5 +31,5 @@ using System.Runtime.InteropServices;
 //
 // You can specify all the values or you can default the Revision and Build Numbers 
 // by using the '*' as shown below:
-[assembly: AssemblyVersion("1.0.0.0")]
-[assembly: AssemblyFileVersion("1.0.0.0")]
+[assembly: AssemblyVersion("1.0.58.0")]
+[assembly: AssemblyFileVersion("1.0.58.0")]

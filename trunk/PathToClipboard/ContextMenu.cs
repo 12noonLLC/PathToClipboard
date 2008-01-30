@@ -66,6 +66,7 @@ namespace ShellExtension
 
 		UInt32 MyCOMDefinitions.IContextMenu.QueryContextMenu(IntPtr hmenu, UInt32 ixMenu, UInt32 idCmdFirst, UInt32 idCmdLast, UInt32 uFlags)
 		{
+			System.Diagnostics.Debug.Assert(idCmdFirst <= idCmdLast, "Windows bug: The first command is supposed to be less than or equal to the last command.");
 			if (_hDrop == 0)
 				return 0;
 

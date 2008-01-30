@@ -176,7 +176,7 @@ namespace Win32Functions
 		internal static extern Int32 GetMenuItemCount(IntPtr hmenu);
 
 		[DllImport("user32", CharSet = CharSet.Auto)]
-		internal static extern Boolean AppendMenu(IntPtr hmenu, MF uflags, UInt32 uIDNewItemOrSubmenu, string text);
+		internal static extern Boolean AppendMenu(IntPtr hmenu, MF uflags, IntPtr uIDNewItemOrSubmenu, string text);
 
 		//superseded by InsertMenuItem() but can still use it
 		[DllImport("user32", CharSet = CharSet.Auto)]
@@ -323,9 +323,9 @@ namespace Win32Functions
 			//----------------------------------------------------------------
 
 			private IntPtr _hMenu = IntPtr.Zero;
-			public IntPtr HMENU
+			public static implicit operator IntPtr(Menu m)
 			{
-				get { return _hMenu; }
+				return m._hMenu;
 			}
 
 			//----------------------------------------------------------------
@@ -385,7 +385,7 @@ namespace Win32Functions
 
 			public void AppendMenuSeparator()
 			{
-				bool brc = Win32Functions.Imports.AppendMenu((IntPtr)_hMenu, Win32Functions.MF.SEPARATOR, 0, string.Empty);
+				bool brc = Win32Functions.Imports.AppendMenu((IntPtr)_hMenu, Win32Functions.MF.SEPARATOR, IntPtr.Zero, string.Empty);
 				System.Diagnostics.Debug.Assert(brc, "AppendMenu (separator) failed.");
 				++_idNextCommand;
 			}
@@ -394,7 +394,7 @@ namespace Win32Functions
 			{
 				System.Diagnostics.Debug.Assert(strText != string.Empty, "Text cannot be empty.");
 
-				bool brc = Win32Functions.Imports.AppendMenu((IntPtr)_hMenu, Win32Functions.MF.STRING, (UInt32)Menu.NextCommand, strText);
+				bool brc = Win32Functions.Imports.AppendMenu((IntPtr)_hMenu, Win32Functions.MF.STRING, (IntPtr)Menu.NextCommand, strText);
 				System.Diagnostics.Debug.Assert(brc, "AppendMenu failed.");
 
 				return AddMenuCommandHandler(handler, data);
@@ -404,7 +404,7 @@ namespace Win32Functions
 			{
 				System.Diagnostics.Debug.Assert(menuPopup != null, "The menu cannot be null.");
 
-				bool brc = Win32Functions.Imports.AppendMenu(_hMenu, Win32Functions.MF.POPUP, (UInt32)menuPopup.HMENU, menuPopup.Text);
+				bool brc = Win32Functions.Imports.AppendMenu(_hMenu, Win32Functions.MF.POPUP, menuPopup, menuPopup.Text);
 				System.Diagnostics.Debug.Assert(brc, "AppendMenu failed.");
 				++_idNextCommand;		// this may not be necessary for popups, but I want to be safe
 			}
@@ -433,7 +433,7 @@ namespace Win32Functions
 			{
 				System.Diagnostics.Debug.Assert(menuPopup != null, "The menu cannot be null.");
 
-				bool brc = Win32Functions.Imports.InsertMenu(_hMenu, Menu.MenuPosition, Win32Functions.MF.BYPOSITION | Win32Functions.MF.POPUP, menuPopup.HMENU, menuPopup.Text);
+				bool brc = Win32Functions.Imports.InsertMenu(_hMenu, Menu.MenuPosition, Win32Functions.MF.BYPOSITION | Win32Functions.MF.POPUP, menuPopup, menuPopup.Text);
 				System.Diagnostics.Debug.Assert(brc);
 				++_idNextCommand;		// this may not be necessary for popups, but I want to be safe
 				++_ixMenuPosition;

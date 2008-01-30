@@ -17,44 +17,53 @@ namespace PathToClipboard	// WHY: PathToClipboardExtension doesn't work
 
 			Win32Functions.Wrappers.MenuPopup menuPopup = new Win32Functions.Wrappers.MenuPopup("Path to clipboard");
 
-			// for each selected file, add all forms of its path to the menu, separated by--what else--separators
-			string strPaths = string.Empty;
-			string strNames = string.Empty;
-			foreach (string strPath in filepaths)
+			/*
+			 * If there more than one file is selected, add an "ALL PATHS" option.
+			 */
+			if (filepaths.Count > 1)
 			{
-				if (strPath != filepaths[0])
+				// for each selected file, add all forms of its path to the menu, separated by--what else--separators
+				string strPaths = string.Empty;
+				string strNames = string.Empty;
+				foreach (string strFilepath in filepaths)
+				{
+					strPaths += strFilepath + System.Environment.NewLine;
+					string strName = strFilepath.Remove(0, strFilepath.LastIndexOf("\\") + 1);
+					strNames += strName + System.Environment.NewLine;
+				}
+
+				// C:\bin\
+				string strDir = filepaths[0].Remove(filepaths[0].LastIndexOf("\\"));
+				menuPopup.AppendMenuCommand(strDir + "\tDirectory", MyCommandHandler, strDir);
+				menuPopup.AppendMenuCommand("All paths\tPath", MyCommandHandler, strPaths);
+				menuPopup.AppendMenuCommand("All names\tFile", MyCommandHandler, strNames);
+				menuPopup.AppendMenuSeparator();
+			}
+
+			foreach (string strFilepath in filepaths)
+			{
+				if (strFilepath != filepaths[0])
 					menuPopup.AppendMenuSeparator();
 
 				// C:\bin\test.txt
-				menuPopup.AppendMenuCommand(strPath + "\tPath", MyCommandHandler, strPath);
-				strPaths += strPath + System.Environment.NewLine;
+				menuPopup.AppendMenuCommand(strFilepath + "\tPath", MyCommandHandler, strFilepath);
 
-				// C:\bin\
-				string strName = strPath.Remove(strPath.LastIndexOf("\\"));
-				menuPopup.AppendMenuCommand(strName + "\tDirectory", MyCommandHandler, strName);
+				if (filepaths.Count == 1)
+				{
+					// C:\bin\
+					string strDir = strFilepath.Remove(strFilepath.LastIndexOf("\\"));
+					menuPopup.AppendMenuCommand(strDir + "\tDirectory", MyCommandHandler, strDir);
+				}
 
 				// test.txt
-				strName = strPath.Remove(0, strPath.LastIndexOf("\\") + 1);
+				string strName = strFilepath.Remove(0, strFilepath.LastIndexOf("\\") + 1);
 				menuPopup.AppendMenuCommand(strName + "\tFile", MyCommandHandler, strName);
-				strNames += strName + System.Environment.NewLine;
 
 //UNC paths
 //            // \\computer\c\bin\test.txt
 ////string strUNC = "UNC format";
 //string strUNC = Win32Functions.Wrappers.WNet.WNetGetUniversalName(s);
 //            _idsFilepaths.Add(menuPopup.AppendMenuCommand(strUNC, MyCommandHandler), strUNC);
-			}
-
-			/*
-			 * If there more than one file is selected, add an "ALL PATHS" option.
-			 */
-			if (filepaths.Count > 1)
-			{
-				menuPopup.AppendMenuSeparator();
-
-				menuPopup.AppendMenuCommand("All paths\tPath", MyCommandHandler, strPaths);
-				// There's no point in doing "All directories" because they're all the same.
-				menuPopup.AppendMenuCommand("All names\tFile", MyCommandHandler, strNames);
 			}
 
 			menuContext.InsertMenuPopup(menuPopup);
