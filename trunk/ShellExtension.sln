@@ -10,9 +10,11 @@ Global
 		Debug|Any CPU = Debug|Any CPU
 		Debug|Mixed Platforms = Debug|Mixed Platforms
 		Debug|Win32 = Debug|Win32
+		Debug|x64 = Debug|x64
 		Release|Any CPU = Release|Any CPU
 		Release|Mixed Platforms = Release|Mixed Platforms
 		Release|Win32 = Release|Win32
+		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{A76C8569-6D8B-499E-BBBA-1482A51CD367}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -20,19 +22,27 @@ Global
 		{A76C8569-6D8B-499E-BBBA-1482A51CD367}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
 		{A76C8569-6D8B-499E-BBBA-1482A51CD367}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
 		{A76C8569-6D8B-499E-BBBA-1482A51CD367}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{A76C8569-6D8B-499E-BBBA-1482A51CD367}.Debug|x64.ActiveCfg = Debug|x64
+		{A76C8569-6D8B-499E-BBBA-1482A51CD367}.Debug|x64.Build.0 = Debug|x64
 		{A76C8569-6D8B-499E-BBBA-1482A51CD367}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A76C8569-6D8B-499E-BBBA-1482A51CD367}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A76C8569-6D8B-499E-BBBA-1482A51CD367}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{A76C8569-6D8B-499E-BBBA-1482A51CD367}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{A76C8569-6D8B-499E-BBBA-1482A51CD367}.Release|Win32.ActiveCfg = Release|Any CPU
+		{A76C8569-6D8B-499E-BBBA-1482A51CD367}.Release|x64.ActiveCfg = Release|x64
+		{A76C8569-6D8B-499E-BBBA-1482A51CD367}.Release|x64.Build.0 = Release|x64
 		{CBD93C8F-580F-4117-BD2E-6DEEBA63332E}.Debug|Any CPU.ActiveCfg = Debug
 		{CBD93C8F-580F-4117-BD2E-6DEEBA63332E}.Debug|Mixed Platforms.ActiveCfg = Debug
 		{CBD93C8F-580F-4117-BD2E-6DEEBA63332E}.Debug|Win32.ActiveCfg = Debug
+		{CBD93C8F-580F-4117-BD2E-6DEEBA63332E}.Debug|x64.ActiveCfg = Debug
+		{CBD93C8F-580F-4117-BD2E-6DEEBA63332E}.Debug|x64.Build.0 = Debug
 		{CBD93C8F-580F-4117-BD2E-6DEEBA63332E}.Release|Any CPU.ActiveCfg = Release
 		{CBD93C8F-580F-4117-BD2E-6DEEBA63332E}.Release|Any CPU.Build.0 = Release
 		{CBD93C8F-580F-4117-BD2E-6DEEBA63332E}.Release|Mixed Platforms.ActiveCfg = Release
 		{CBD93C8F-580F-4117-BD2E-6DEEBA63332E}.Release|Mixed Platforms.Build.0 = Release
 		{CBD93C8F-580F-4117-BD2E-6DEEBA63332E}.Release|Win32.ActiveCfg = Release
+		{CBD93C8F-580F-4117-BD2E-6DEEBA63332E}.Release|x64.ActiveCfg = Release64
+		{CBD93C8F-580F-4117-BD2E-6DEEBA63332E}.Release|x64.Build.0 = Release64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

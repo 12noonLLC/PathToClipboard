@@ -91,10 +91,52 @@
             "ComponentsUrl" = "8:"
                 "Items"
                 {
-                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:Microsoft.Net.Framework.2.0"
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:Microsoft.Net.Framework.3.5.SP1"
                     {
-                    "Name" = "8:Microsoft .NET Framework 2.0"
-                    "ProductCode" = "8:Microsoft.Net.Framework.2.0"
+                    "Name" = "8:.NET Framework 3.5 SP1"
+                    "ProductCode" = "8:Microsoft.Net.Framework.3.5.SP1"
+                    }
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:Microsoft.Windows.Installer.3.1"
+                    {
+                    "Name" = "8:Windows Installer 3.1"
+                    "ProductCode" = "8:Microsoft.Windows.Installer.3.1"
+                    }
+                }
+            }
+        }
+        "Release64"
+        {
+        "DisplayName" = "8:Release64"
+        "IsDebugOnly" = "11:FALSE"
+        "IsReleaseOnly" = "11:FALSE"
+        "OutputFilename" = "8:Release64\\pathtoclipboard64.msi"
+        "PackageFilesAs" = "3:2"
+        "PackageFileSize" = "3:-2147483648"
+        "CabType" = "3:1"
+        "Compression" = "3:2"
+        "SignOutput" = "11:FALSE"
+        "CertificateFile" = "8:"
+        "PrivateKeyFile" = "8:"
+        "TimeStampServer" = "8:"
+        "InstallerBootstrapper" = "3:2"
+            "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
+            {
+            "Enabled" = "11:TRUE"
+            "PromptEnabled" = "11:TRUE"
+            "PrerequisitesLocation" = "2:1"
+            "Url" = "8:"
+            "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:Microsoft.Net.Framework.3.5.SP1"
+                    {
+                    "Name" = "8:.NET Framework 3.5 SP1"
+                    "ProductCode" = "8:Microsoft.Net.Framework.3.5.SP1"
+                    }
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:Microsoft.Windows.Installer.3.1"
+                    {
+                    "Name" = "8:Windows Installer 3.1"
+                    "ProductCode" = "8:Microsoft.Windows.Installer.3.1"
                     }
                 }
             }
@@ -131,7 +173,7 @@
             {
             "AssemblyRegister" = "3:2"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:PathToClipboard, Version=1.0.58.0, Culture=neutral, PublicKeyToken=83f37c29ac74c202, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:PathToClipboard, Version=1.1.60.0, Culture=neutral, PublicKeyToken=83f37c29ac74c202, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                     "_D12E78AEBD1A4042969B46DF9ADF682D"
@@ -197,13 +239,14 @@
         "MsiBootstrapper"
         {
         "LangId" = "3:1033"
+        "RequiresElevation" = "11:FALSE"
         }
         "Product"
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:PathToClipboard"
         "ProductCode" = "8:{76346746-B6DD-4ABD-BF95-E229E7CA592A}"
-        "PackageCode" = "8:{2D7226BC-B750-4016-A774-FF94FD547E2C}"
+        "PackageCode" = "8:{153AB84B-5278-49DA-8970-120779EC0D5E}"
         "UpgradeCode" = "8:{CD10448D-7925-4F4E-AD20-3D1C23042273}"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
@@ -331,7 +374,7 @@
                                         {
                                             "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_D0EC366AA4E94F4E9D6F8ED41C36F24E"
                                             {
-                                            "Name" = "8:PathToClipboard {2e820618-9430-421b-8fa5-12bd9e31eef3}"
+                                            "Name" = "8:12noon PathToClipboard {2e820618-9430-421b-8fa5-12bd9e31eef3}"
                                             "Condition" = "8:"
                                             "AlwaysCreate" = "11:FALSE"
                                             "DeleteAtUninstall" = "11:TRUE"
@@ -787,7 +830,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_5E2B87FD113A44CC83AF04BBEE912CCE"
             {
-            "SourcePath" = "8:..\\obj\\Release\\PathToClipboard.dll"
+            "SourcePath" = "8:..\\obj\\Debug\\PathToClipboard.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_38FCB6ED95F64F4898401C2698A63A6D"
