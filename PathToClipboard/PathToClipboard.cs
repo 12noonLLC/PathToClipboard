@@ -27,13 +27,13 @@ namespace PathToClipboard	// WHY: PathToClipboardExtension doesn't work
 				string strNames = string.Empty;
 				foreach (string strFilepath in filepaths)
 				{
-					strPaths += strFilepath + System.Environment.NewLine;
-					string strName = strFilepath.Remove(0, strFilepath.LastIndexOf("\\") + 1);
+					strPaths += strFilepath + System.IO.Path.PathSeparator + System.Environment.NewLine;
+					string strName = System.IO.Path.GetFileName(strFilepath);
 					strNames += strName + System.Environment.NewLine;
 				}
 
 				// C:\bin\
-				string strDir = filepaths[0].Remove(filepaths[0].LastIndexOf("\\"));
+				string strDir = System.IO.Path.GetDirectoryName(filepaths[0]) + System.IO.Path.PathSeparator;
 				menuPopup.AppendMenuCommand(strDir + "\tDirectory", MyCommandHandler, strDir);
 				menuPopup.AppendMenuCommand("All paths\tPath", MyCommandHandler, strPaths);
 				menuPopup.AppendMenuCommand("All names\tFile", MyCommandHandler, strNames);
@@ -51,12 +51,12 @@ namespace PathToClipboard	// WHY: PathToClipboardExtension doesn't work
 				if (filepaths.Count == 1)
 				{
 					// C:\bin\
-					string strDir = strFilepath.Remove(strFilepath.LastIndexOf("\\"));
+					string strDir = System.IO.Path.GetDirectoryName(strFilepath) + System.IO.Path.PathSeparator;
 					menuPopup.AppendMenuCommand(strDir + "\tDirectory", MyCommandHandler, strDir);
 				}
 
 				// test.txt
-				string strName = strFilepath.Remove(0, strFilepath.LastIndexOf("\\") + 1);
+				string strName = System.IO.Path.GetFileName(strFilepath);
 				menuPopup.AppendMenuCommand(strName + "\tFile", MyCommandHandler, strName);
 
 //UNC paths
