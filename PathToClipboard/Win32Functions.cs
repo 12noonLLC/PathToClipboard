@@ -13,6 +13,7 @@ namespace Win32Functions
 		public const int ERROR_MORE_DATA = 234;
 		public const int ERROR_BAD_DEVICE = 1200;
 		public const int ERROR_NOT_CONNECTED = 2250;
+		public const int STRSAFE_E_INSUFFICIENT_BUFFER = -2147024774;
 	}
 
 	#region Win32Enumerations

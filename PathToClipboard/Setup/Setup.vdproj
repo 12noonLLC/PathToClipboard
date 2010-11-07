@@ -15,7 +15,7 @@
     {
         "Entry"
         {
-        "MsmKey" = "8:_4FB079E61FA142BD83446B9DAC90ADDC"
+        "MsmKey" = "8:_57DAB4036769434294CB3BC18E5F4CF1"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -34,7 +34,7 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_4FB079E61FA142BD83446B9DAC90ADDC"
+        "OwnerKey" = "8:_57DAB4036769434294CB3BC18E5F4CF1"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -64,10 +64,15 @@
             "ComponentsUrl" = "8:"
                 "Items"
                 {
-                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:Microsoft.Net.Framework.3.5.SP1"
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.0,Profile=Client"
                     {
-                    "Name" = "8:.NET Framework 3.5 SP1"
-                    "ProductCode" = "8:Microsoft.Net.Framework.3.5.SP1"
+                    "Name" = "8:Microsoft .NET Framework 4 Client Profile (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.0,Profile=Client"
+                    }
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:Microsoft.Windows.Installer.3.1"
+                    {
+                    "Name" = "8:Windows Installer 3.1"
+                    "ProductCode" = "8:Microsoft.Windows.Installer.3.1"
                     }
                 }
             }
@@ -96,10 +101,10 @@
             "ComponentsUrl" = "8:"
                 "Items"
                 {
-                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:Microsoft.Net.Framework.3.5.SP1"
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.0,Profile=Client"
                     {
-                    "Name" = "8:.NET Framework 3.5 SP1"
-                    "ProductCode" = "8:Microsoft.Net.Framework.3.5.SP1"
+                    "Name" = "8:Microsoft .NET Framework 4 Client Profile (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.0,Profile=Client"
                     }
                     "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:Microsoft.Windows.Installer.3.1"
                     {
@@ -133,10 +138,10 @@
             "ComponentsUrl" = "8:"
                 "Items"
                 {
-                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:Microsoft.Net.Framework.3.5.SP1"
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.0,Profile=Client"
                     {
-                    "Name" = "8:.NET Framework 3.5 SP1"
-                    "ProductCode" = "8:Microsoft.Net.Framework.3.5.SP1"
+                    "Name" = "8:Microsoft .NET Framework 4 Client Profile (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.0,Profile=Client"
                     }
                     "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:Microsoft.Windows.Installer.3.1"
                     {
@@ -166,7 +171,7 @@
                 {
                 "Name" = "8:.NET Framework"
                 "Message" = "8:[VSDNETMSG]"
-                "FrameworkVersion" = "8:.NETFramework,Version=v3.5"
+                "FrameworkVersion" = "8:.NETFramework,Version=v4.0,Profile=Client"
                 "AllowLaterVersions" = "11:FALSE"
                 "InstallUrl" = "8:http://go.microsoft.com/fwlink/?LinkId=9832"
                 }
@@ -220,7 +225,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:PathToClipboard"
         "ProductCode" = "8:{76346746-B6DD-4ABD-BF95-E229E7CA592A}"
-        "PackageCode" = "8:{D9B37144-D633-4C25-B458-ADC82038601C}"
+        "PackageCode" = "8:{3D668693-0C02-463B-9417-84E94BEB706D}"
         "UpgradeCode" = "8:{CD10448D-7925-4F4E-AD20-3D1C23042273}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
@@ -230,8 +235,8 @@
         "ProductVersion" = "8:1.0.3"
         "Manufacturer" = "8:12noon"
         "ARPHELPTELEPHONE" = "8:"
-        "ARPHELPLINK" = "8:http://www.12noon.com"
-        "Title" = "8:Setup PathToClipboard"
+        "ARPHELPLINK" = "8:http://12noon.com"
+        "Title" = "8:12noon PathToClipboard"
         "Subject" = "8:"
         "ARPCONTACT" = "8:12noon"
         "Keywords" = "8:path clipboard files folders names directories"
@@ -322,7 +327,7 @@
                 {
                     "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_E110DD8799544243B39FCCFF32F6983E"
                     {
-                    "Name" = "8:AllFilesystemObjects"
+                    "Name" = "8:*"
                     "Condition" = "8:"
                     "AlwaysCreate" = "11:FALSE"
                     "DeleteAtUninstall" = "11:FALSE"
@@ -351,7 +356,7 @@
                                             {
                                             "Name" = "8:12noon PathToClipboard {2e820618-9430-421b-8fa5-12bd9e31eef3}"
                                             "Condition" = "8:"
-                                            "AlwaysCreate" = "11:FALSE"
+                                            "AlwaysCreate" = "11:TRUE"
                                             "DeleteAtUninstall" = "11:TRUE"
                                             "Transitive" = "11:FALSE"
                                                 "Keys"
@@ -803,9 +808,9 @@
         }
         "ProjectOutput"
         {
-            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_4FB079E61FA142BD83446B9DAC90ADDC"
+            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_57DAB4036769434294CB3BC18E5F4CF1"
             {
-            "SourcePath" = "8:..\\obj\\x64\\Release\\PathToClipboard.dll"
+            "SourcePath" = "8:..\\obj\\Release\\PathToClipboard.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_457965579E8E47EB8F6B7722A3287B03"
@@ -822,8 +827,8 @@
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
-            "ProjectOutputGroupRegister" = "3:1"
-            "OutputConfiguration" = "8:Release|x64"
+            "ProjectOutputGroupRegister" = "3:2"
+            "OutputConfiguration" = "8:"
             "OutputGroupCanonicalName" = "8:Built"
             "OutputProjectGuid" = "8:{A76C8569-6D8B-499E-BBBA-1482A51CD367}"
             "ShowKeyOutput" = "11:TRUE"
@@ -833,7 +838,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_5E2B87FD113A44CC83AF04BBEE912CCE"
             {
-            "SourcePath" = "8:..\\obj\\x64\\Release\\PathToClipboard.dll"
+            "SourcePath" = "8:..\\obj\\Release\\PathToClipboard.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_38FCB6ED95F64F4898401C2698A63A6D"
@@ -850,7 +855,7 @@
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
-            "ProjectOutputGroupRegister" = "3:1"
+            "ProjectOutputGroupRegister" = "3:2"
             "OutputConfiguration" = "8:"
             "OutputGroupCanonicalName" = "8:Built"
             "OutputProjectGuid" = "8:{A76C8569-6D8B-499E-BBBA-1482A51CD367}"

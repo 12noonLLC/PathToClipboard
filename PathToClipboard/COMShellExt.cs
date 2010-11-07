@@ -71,7 +71,7 @@ namespace MyCOMDefinitions
 		UInt32 InvokeCommand(IntPtr pici);
 
 		[PreserveSig()]
-		UInt32 GetCommandString(UInt32 idcmd, UInt32 uflags, IntPtr reserved, IntPtr commandstring, UInt32 cch);
+		UInt32 GetCommandString(UIntPtr idcmd, uint uflags, IntPtr reserved, StringBuilder sbCommandString, UInt32 cch);
 //		[MarshalAs(UnmanagedType.LPStr)]
 	}
 }

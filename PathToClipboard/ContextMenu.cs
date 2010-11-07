@@ -8,6 +8,19 @@
  * "C:\Program Files (x86)\Microsoft Visual Studio 8\SDK\v2.0\Bin\gacutil.exe" /if MyAssembly.dll
  *
  * Associated with HKCR/ * shellex/ContextMenuHandlers/
+ * 
+ * Writing Windows Shell Extension with .NET Framework 4
+ * http://blogs.msdn.com/b/codefx/archive/2010/09/14/writing-windows-shell-extension-with-net-framework-4-c-vb-net-part-1.aspx
+ * http://blogs.msdn.com/b/codefx/archive/2010/10/10/writing-windows-shell-extension-with-net-framework-4-c-vb-net-part-2.aspx
+ * 
+ * Registering Shell Extension Handlers
+ * http://msdn.microsoft.com/en-us/library/cc144110.aspx
+ *
+ * Creating Shortcut Menu Handlers
+ * http://msdn.microsoft.com/en-us/library/cc144171.aspx
+ * 
+ * Customizing a Shortcut Menu Using Dynamic Verbs
+ * http://msdn.microsoft.com/en-us/library/ee453696.aspx
  */
 
 using System;
@@ -20,6 +33,8 @@ namespace ShellExtension
 {
 	public abstract class ContextMenu : MyCOMDefinitions.IShellExtInit, MyCOMDefinitions.IContextMenu
 	{
+		private uint IDM_DISPLAY = 0;
+
 		private uint _hDrop = 0;						// HDROP representing collection of selected files
 
 
@@ -158,24 +173,39 @@ namespace ShellExtension
 		}
 
 
-		UInt32 MyCOMDefinitions.IContextMenu.GetCommandString(UInt32 idcmd, UInt32 uflags, IntPtr reserved, IntPtr pszCommandString, UInt32 cch)
+		UInt32 MyCOMDefinitions.IContextMenu.GetCommandString(UIntPtr idcmd, uint uflags, IntPtr reserved, StringBuilder sbCommandString, UInt32 cch)
 		{
-			if (((uflags & (UInt32)MyCOMDefinitions.GCS.HELPTEXTA) != 0) ||
-				 ((uflags & (UInt32)MyCOMDefinitions.GCS.HELPTEXTW) != 0))
+			if (idcmd.ToUInt32() == IDM_DISPLAY)
 			{
-				string strText = GetCommandStringHelp(idcmd - Win32Functions.Wrappers.Menu.FirstCommand);
+				string strText = string.Empty;
 
-				IntPtr h = Marshal.StringToHGlobalAuto(strText);
-				try
+				if (((MyCOMDefinitions.GCS)uflags == MyCOMDefinitions.GCS.VERBA) || ((MyCOMDefinitions.GCS)uflags == MyCOMDefinitions.GCS.VERBW))
 				{
-					Win32Functions.Imports.lstrcpyn(pszCommandString, h, cch);
+					strText = GetCommandStringVerb();
 				}
-				finally
+				else if (((MyCOMDefinitions.GCS)uflags == MyCOMDefinitions.GCS.HELPTEXTA) || ((MyCOMDefinitions.GCS)uflags == MyCOMDefinitions.GCS.HELPTEXTW))
 				{
-					Marshal.FreeHGlobal(h);
+					strText = GetCommandStringHelp(Win32Functions.Wrappers.Menu.FirstCommand);
 				}
+
+				if (strText.Length > cch - 1)
+				{
+					Marshal.ThrowExceptionForHR(Win32Functions.Constants.STRSAFE_E_INSUFFICIENT_BUFFER);
+				}
+
+				sbCommandString.Clear();
+				sbCommandString.Append(strText);
 			}
 			return 0;
+		}
+
+		/// <summary>
+		/// Override this function to return specific text for the verb.
+		/// </summary>
+		/// <returns>The string to use as the verb</returns>
+		virtual protected string GetCommandStringVerb()
+		{
+			return string.Empty;
 		}
 
 		/// <summary>
@@ -197,20 +227,26 @@ namespace ShellExtension
 		/*
 		 * These methods must be called by the derived class that is, ultimately, the extension.
 		 * They're invoked by regasm.exe.
+		 * 
+		 * Registering Shell Extension Handlers
+		 * http://msdn.microsoft.com/en-us/library/cc144110(VS.85).aspx
+		 * 
+		 * Approved Shell Extensions
+		 * http://msdn.microsoft.com/en-us/library/ms812054.aspx
 		 */
 
 		static protected void RegisterServerHelper(Type t, string[] filetypes)
 		{
-			string strGuid = "{" + t.GUID.ToString() + "}";
+			string strGuid = t.GUID.ToString("B");
 
 			try
 			{
 				/*
 				 * Mark this extension as Approved.
 				 */
-				Microsoft.Win32.RegistryKey key = Microsoft.Win32.Registry.LocalMachine.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Shell Extensions\Approved", true);
-				key.SetValue(strGuid, t.Name);
-				key.Close();
+				//Microsoft.Win32.RegistryKey key = Microsoft.Win32.Registry.LocalMachine.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Shell Extensions\Approved", true);
+				//key.SetValue(strGuid, t.Name);
+				//key.Close();
 
 				/*
 				 * Associate all specified filetypes with this handler.
@@ -220,7 +256,7 @@ namespace ShellExtension
 				 */
 				foreach (string filetype in filetypes)
 				{
-					key = Microsoft.Win32.Registry.ClassesRoot.CreateSubKey(filetype + @"\shellex\ContextMenuHandlers\" + t.Name + " " + strGuid);
+					Microsoft.Win32.RegistryKey key = Microsoft.Win32.Registry.ClassesRoot.CreateSubKey(filetype + @"\shellex\ContextMenuHandlers\" + t.Name + " " + strGuid);
 					key.SetValue("", strGuid);
 					key.Close();
 					System.Console.WriteLine("Registered file type {0}", filetype);
@@ -236,7 +272,7 @@ namespace ShellExtension
 
 		static protected void UnregisterServerHelper(Type t, string[] filetypes)
 		{
-			string strGuid = "{" + t.GUID.ToString() + "}";
+			string strGuid = t.GUID.ToString("B");
 
 			try
 			{
@@ -255,9 +291,9 @@ namespace ShellExtension
 				/*
 				 * Clear this extension as Approved.
 				 */
-				Microsoft.Win32.RegistryKey key = Microsoft.Win32.Registry.LocalMachine.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Shell Extensions\Approved", true);
-				key.DeleteValue(strGuid);
-				key.Close();
+				//Microsoft.Win32.RegistryKey key = Microsoft.Win32.Registry.LocalMachine.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Shell Extensions\Approved", true);
+				//key.DeleteValue(strGuid);
+				//key.Close();
 
 				System.Console.WriteLine("Unregistered GUID {0}", strGuid);
 			}

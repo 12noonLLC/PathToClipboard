@@ -27,13 +27,13 @@ namespace PathToClipboard	// WHY: PathToClipboardExtension doesn't work
 				string strNames = string.Empty;
 				foreach (string strFilepath in filepaths)
 				{
-					strPaths += strFilepath + System.IO.Path.PathSeparator + System.Environment.NewLine;
+					strPaths += strFilepath + System.Environment.NewLine;
 					string strName = System.IO.Path.GetFileName(strFilepath);
 					strNames += strName + System.Environment.NewLine;
 				}
 
 				// C:\bin\
-				string strDir = System.IO.Path.GetDirectoryName(filepaths[0]) + System.IO.Path.PathSeparator;
+				string strDir = System.IO.Path.GetDirectoryName(filepaths[0]) + System.IO.Path.DirectorySeparatorChar;
 				menuPopup.AppendMenuCommand(strDir + "\tDirectory", MyCommandHandler, strDir);
 				menuPopup.AppendMenuCommand("All paths\tPath", MyCommandHandler, strPaths);
 				menuPopup.AppendMenuCommand("All names\tFile", MyCommandHandler, strNames);
@@ -51,7 +51,7 @@ namespace PathToClipboard	// WHY: PathToClipboardExtension doesn't work
 				if (filepaths.Count == 1)
 				{
 					// C:\bin\
-					string strDir = System.IO.Path.GetDirectoryName(strFilepath) + System.IO.Path.PathSeparator;
+					string strDir = System.IO.Path.GetDirectoryName(strFilepath) + System.IO.Path.DirectorySeparatorChar;
 					menuPopup.AppendMenuCommand(strDir + "\tDirectory", MyCommandHandler, strDir);
 				}
 
@@ -67,6 +67,11 @@ namespace PathToClipboard	// WHY: PathToClipboardExtension doesn't work
 			}
 
 			menuContext.InsertMenuPopup(menuPopup);
+		}
+
+		override protected string GetCommandStringVerb()
+		{
+			return "PathToClipboard";
 		}
 
 		override protected string GetCommandStringHelp(uint ixCmd)
@@ -97,13 +102,13 @@ namespace PathToClipboard	// WHY: PathToClipboardExtension doesn't work
 		 */
 		static private string[] _filetypes = new string[] { "AllFilesystemObjects" };
 
-		[System.Runtime.InteropServices.ComRegisterFunctionAttribute()]
+		[System.Runtime.InteropServices.ComRegisterFunction()]
 		static public void RegisterServer(Type t)
 		{
 			ShellExtension.ContextMenu.RegisterServerHelper(t, _filetypes);
 		}
 
-		[System.Runtime.InteropServices.ComUnregisterFunctionAttribute()]
+		[System.Runtime.InteropServices.ComUnregisterFunction()]
 		static public void UnregisterServer(Type t)
 		{
 			ShellExtension.ContextMenu.UnregisterServerHelper(t, _filetypes);
