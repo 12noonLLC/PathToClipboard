@@ -69,6 +69,21 @@ namespace ShellExtension
 				System.Runtime.InteropServices.ComTypes.IDataObject dataObject = (System.Runtime.InteropServices.ComTypes.IDataObject)Marshal.GetObjectForIUnknown(lpdobj);
 				dataObject.GetData(ref fmt, out medium);
 				hDrop = medium.unionmember;
+				if (hDrop == IntPtr.Zero)
+					return;
+
+				// how many files are selected? (Not necessarily any!)
+				uint nSelected = Win32Functions.Imports.DragQueryFile(hDrop, uint.MaxValue, null, 0);
+				if (nSelected == 0)
+					return;
+
+				// get each file path
+				StringBuilder sb = new StringBuilder(Win32Functions.Constants.MAX_FILE_LEN);
+				for (uint ix = 0; ix < nSelected; ++ix)
+				{
+					if (Win32Functions.Imports.DragQueryFile(hDrop, ix, sb, (uint)sb.Capacity) != 0)
+						_filepaths.Add(sb.ToString());
+				}
 			}
 			catch (Exception)
 			{
@@ -76,21 +91,6 @@ namespace ShellExtension
 			finally
 			{
 				Win32Functions.Imports.ReleaseStgMedium(ref medium);
-			}
-
-			if (hDrop == IntPtr.Zero)
-				return;
-
-			// how many files are selected?
-			uint nSelected = Win32Functions.Imports.DragQueryFile(hDrop, uint.MaxValue, null, 0);
-			System.Diagnostics.Debug.Assert(nSelected > 0, "At least one file must be selected.");
-
-			// get each file path
-			StringBuilder sb = new StringBuilder(Win32Functions.Constants.MAX_FILE_LEN);
-			for (uint ix = 0; ix < nSelected; ++ix)
-			{
-				if (Win32Functions.Imports.DragQueryFile(hDrop, ix, sb, (uint)sb.Capacity) != 0)
-					_filepaths.Add(sb.ToString());
 			}
 
 //			return 0;

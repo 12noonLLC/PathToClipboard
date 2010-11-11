@@ -35,7 +35,8 @@ namespace Win32Functions
 
 
 	// Make these constants 
-	public enum MIIM : uint
+	[Flags]
+	internal enum MIIM : uint
 	{
 		STATE = 0x00000001,
 		ID = 0x00000002,
@@ -48,30 +49,61 @@ namespace Win32Functions
 		FTYPE = 0x00000100
 	}
 
-	public enum MF : uint
+	internal enum MFT : uint
 	{
+		STRING = 0x00000000,
+		BITMAP = 0x00000004,
+		MENUBARBREAK = 0x00000020,
+		MENUBREAK = 0x00000040,
+		OWNERDRAW = 0x00000100,
+		RIGHTJUSTIFY = 0x00004000,
+	}
+
+	internal enum MFS : uint
+	{
+		ENABLED = 0x00000000,
+		UNCHECKED = 0x00000000,
+		UNHILITE = 0x00000000,
+		GRAYED = 0x00000003,
+		DISABLED = 0x00000003,
+		CHECKED = 0x00000008,
+		HILITE = 0x00000080,
+		DEFAULT = 0x00001000,
+	}
+
+	// Use for AppendMenu and InsertMenu
+	internal enum MF_WIN40 : uint
+	{
+		BYCOMMAND = 0x00000000,
+		BYPOSITION = 0x00000400,
+
 		INSERT = 0x00000000,
 		CHANGE = 0x00000080,
 		APPEND = 0x00000100,
 		DELETE = 0x00000200,
 		REMOVE = 0x00001000,
-		BYCOMMAND = 0x00000000,
-		BYPOSITION = 0x00000400,
+
 		SEPARATOR = 0x00000800,
+
 		ENABLED = 0x00000000,
 		GRAYED = 0x00000001,
 		DISABLED = 0x00000002,
+
 		UNCHECKED = 0x00000000,
 		CHECKED = 0x00000008,
 		USECHECKBITMAPS = 0x00000200,
+
 		STRING = 0x00000000,
 		BITMAP = 0x00000004,
 		OWNERDRAW = 0x00000100,
+
 		POPUP = 0x00000010,
 		MENUBARBREAK = 0x00000020,
 		MENUBREAK = 0x00000040,
+
 		UNHILITE = 0x00000000,
 		HILITE = 0x00000080,
+
 		DEFAULT = 0x00001000,
 		SYSMENU = 0x00002000,
 		HELP = 0x00004000,
@@ -79,7 +111,7 @@ namespace Win32Functions
 		MOUSESELECT = 0x00008000
 	}
 
-	public enum CLIPFORMAT : uint
+	internal enum CLIPFORMAT : uint
 	{
 		CF_TEXT = 1,
 		CF_BITMAP = 2,
@@ -122,21 +154,20 @@ namespace Win32Functions
 
 	#region Win32Structures
 
-	[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
-	public struct MENUITEMINFO
+	[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+	internal struct MENUITEMINFO
 	{
-		public UInt32 cbSize;
-		public UInt32 fMask;
-		public UInt32 fType;
-		public UInt32 fState;
-		public UInt32 wID;
+		public uint cbSize;
+		public MIIM fMask;
+		public MFT fType;
+		public MFS fState;
+		public uint wID;
 		public IntPtr	/*HMENU*/	  hSubMenu;
 		public IntPtr	/*HBITMAP*/   hbmpChecked;
 		public IntPtr	/*HBITMAP*/	  hbmpUnchecked;
 		public IntPtr	/*ULONG_PTR*/ dwItemData;
-		[MarshalAs(UnmanagedType.LPTStr)]
 		public String dwTypeData;
-		public UInt32 cch;
+		public uint cch;
 		public IntPtr	/*HBITMAP*/ hbmpItem;
 
 /*http://www.pinvoke.net/default.aspx/Structures/MENUITEMINFO.html
@@ -167,7 +198,7 @@ namespace Win32Functions
 		//internal static extern IntPtr lstrcpyn([Out] IntPtr pStringDest, IntPtr pStringSrc, UInt32 cchMax);
 
 
-		[DllImport("shell32", CharSet = CharSet.Unicode)]
+		[DllImport("shell32", CharSet = CharSet.Auto)]
 		internal static extern uint DragQueryFile(IntPtr hDrop, uint iFile, StringBuilder buffer, uint cch);
 
 
@@ -187,12 +218,12 @@ namespace Win32Functions
 		[DllImport("user32")]
 		internal static extern Int32 GetMenuItemCount(IntPtr hmenu);
 
-		[DllImport("user32", CharSet = CharSet.Auto)]
-		internal static extern Boolean AppendMenu(IntPtr hmenu, MF uflags, IntPtr uIDNewItemOrSubmenu, string text);
+		[DllImport("user32", CharSet = CharSet.Unicode)]
+		internal static extern Boolean AppendMenu(IntPtr hmenu, MF_WIN40 uflags, IntPtr uIDNewItemOrSubmenu, string text);
 
 		//superseded by InsertMenuItem() but can still use it
-		[DllImport("user32", CharSet = CharSet.Auto)]
-		internal static extern Boolean InsertMenu(IntPtr hmenu, UInt32 position, MF uflags, IntPtr uIDNewItemOrSubmenu, string text);
+		[DllImport("user32", CharSet = CharSet.Unicode)]
+		internal static extern Boolean InsertMenu(IntPtr hmenu, UInt32 position, MF_WIN40 uflags, IntPtr uIDNewItemOrSubmenu, string text);
 
 //Can't get this to work (on 2003). Probably the string member of MENUITEMINFO. Maybe it should marshal as IntPtr.
 //http://www.pinvoke.net/default.aspx/Interfaces/IContextMenu.html
@@ -218,8 +249,11 @@ namespace Win32Functions
 //            }
 //            ++idCmdNext;
 //            ++ixMenu;
-		[DllImport("user32", CharSet = CharSet.Auto, SetLastError=true)]
-		internal static extern Boolean InsertMenuItem(IntPtr hmenu, UInt32 iItem, Boolean bByPosition, ref MENUITEMINFO mii);
+		[DllImport("user32", CharSet = CharSet.Unicode, SetLastError=true)]
+		internal static extern Boolean InsertMenuItem(IntPtr hmenu,
+																	uint iItem,
+																	[MarshalAs(UnmanagedType.Bool)]bool bByPosition,
+																	ref MENUITEMINFO mii);
 
 
 /*
@@ -397,7 +431,7 @@ namespace Win32Functions
 
 			public void AppendMenuSeparator()
 			{
-				bool brc = Win32Functions.Imports.AppendMenu((IntPtr)_hMenu, Win32Functions.MF.SEPARATOR, IntPtr.Zero, string.Empty);
+				bool brc = Win32Functions.Imports.AppendMenu((IntPtr)_hMenu, Win32Functions.MF_WIN40.SEPARATOR, IntPtr.Zero, string.Empty);
 				System.Diagnostics.Debug.Assert(brc, "AppendMenu (separator) failed.");
 				++_idNextCommand;
 			}
@@ -406,7 +440,7 @@ namespace Win32Functions
 			{
 				System.Diagnostics.Debug.Assert(strText != string.Empty, "Text cannot be empty.");
 
-				bool brc = Win32Functions.Imports.AppendMenu((IntPtr)_hMenu, Win32Functions.MF.STRING, (IntPtr)Menu.NextCommand, strText);
+				bool brc = Win32Functions.Imports.AppendMenu((IntPtr)_hMenu, Win32Functions.MF_WIN40.STRING, (IntPtr)Menu.NextCommand, strText);
 				System.Diagnostics.Debug.Assert(brc, "AppendMenu failed.");
 
 				return AddMenuCommandHandler(handler, data);
@@ -416,7 +450,7 @@ namespace Win32Functions
 			{
 				System.Diagnostics.Debug.Assert(menuPopup != null, "The menu cannot be null.");
 
-				bool brc = Win32Functions.Imports.AppendMenu(_hMenu, Win32Functions.MF.POPUP, menuPopup, menuPopup.Text);
+				bool brc = Win32Functions.Imports.AppendMenu(_hMenu, Win32Functions.MF_WIN40.POPUP, menuPopup, menuPopup.Text);
 				System.Diagnostics.Debug.Assert(brc, "AppendMenu failed.");
 				++_idNextCommand;		// this may not be necessary for popups, but I want to be safe
 			}
@@ -424,7 +458,7 @@ namespace Win32Functions
 
 			public void InsertMenuSeparator()
 			{
-				bool brc = Win32Functions.Imports.InsertMenu((IntPtr)_hMenu, Menu.MenuPosition, Win32Functions.MF.SEPARATOR, IntPtr.Zero, string.Empty);
+				bool brc = Win32Functions.Imports.InsertMenu((IntPtr)_hMenu, Menu.MenuPosition, Win32Functions.MF_WIN40.SEPARATOR, IntPtr.Zero, string.Empty);
 				System.Diagnostics.Debug.Assert(brc, "InsertMenu (separator) failed.");
 				++_idNextCommand;
 				++_ixMenuPosition;
@@ -434,7 +468,7 @@ namespace Win32Functions
 			{
 				System.Diagnostics.Debug.Assert(strText != string.Empty, "Text cannot be empty.");
 
-				bool brc = Win32Functions.Imports.InsertMenu((IntPtr)_hMenu, Menu.MenuPosition, Win32Functions.MF.BYPOSITION | Win32Functions.MF.STRING, (IntPtr)Menu.NextCommand, strText);
+				bool brc = Win32Functions.Imports.InsertMenu((IntPtr)_hMenu, Menu.MenuPosition, Win32Functions.MF_WIN40.BYPOSITION | Win32Functions.MF_WIN40.STRING, (IntPtr)Menu.NextCommand, strText);
 				System.Diagnostics.Debug.Assert(brc, "InsertMenuCommand failed.");
 				++_ixMenuPosition;
 
@@ -445,7 +479,7 @@ namespace Win32Functions
 			{
 				System.Diagnostics.Debug.Assert(menuPopup != null, "The menu cannot be null.");
 
-				bool brc = Win32Functions.Imports.InsertMenu(_hMenu, Menu.MenuPosition, Win32Functions.MF.BYPOSITION | Win32Functions.MF.POPUP, menuPopup, menuPopup.Text);
+				bool brc = Win32Functions.Imports.InsertMenu(_hMenu, Menu.MenuPosition, Win32Functions.MF_WIN40.BYPOSITION | Win32Functions.MF_WIN40.POPUP, menuPopup, menuPopup.Text);
 				System.Diagnostics.Debug.Assert(brc);
 				++_idNextCommand;		// this may not be necessary for popups, but I want to be safe
 				++_ixMenuPosition;
