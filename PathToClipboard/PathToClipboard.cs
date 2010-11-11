@@ -7,7 +7,8 @@ using System.Runtime.InteropServices;
 namespace PathToClipboard	// WHY: PathToClipboardExtension doesn't work
 {
 	// Generate a new GUID and use it below in the class.
-	[ComVisible(true), System.Runtime.InteropServices.Guid("2E820618-9430-421b-8FA5-12BD9E31EEF3")]
+	[ClassInterface(ClassInterfaceType.None)]
+	[Guid("2E820618-9430-421b-8FA5-12BD9E31EEF3"), ComVisible(true)]
 	public class PathToClipboard : ShellExtension.ContextMenu
 	{
 		override protected void AddMenuCommands(Win32Functions.Wrappers.Menu menuContext, System.Collections.Specialized.StringCollection filepaths)
@@ -97,18 +98,24 @@ namespace PathToClipboard	// WHY: PathToClipboardExtension doesn't work
 
 		#region Registration
 		/*
-			Use this instead of "*", "Folder".
-			Could also be "Directory" instead of "Folder".
+		 * Use "Files" instead of "*", "Folder".
+		 * Could also be "Directory" instead of "Folder".
+		 * 
+		 * AllFilesystemObjects
+		 * *
+		 * Folder
+		 * Directory
+		 * Folder
 		 */
 		static private string[] _filetypes = new string[] { "AllFilesystemObjects" };
 
-		[System.Runtime.InteropServices.ComRegisterFunction()]
+		[ComRegisterFunction()]
 		static public void RegisterServer(Type t)
 		{
 			ShellExtension.ContextMenu.RegisterServerHelper(t, _filetypes);
 		}
 
-		[System.Runtime.InteropServices.ComUnregisterFunction()]
+		[ComUnregisterFunction()]
 		static public void UnregisterServer(Type t)
 		{
 			ShellExtension.ContextMenu.UnregisterServerHelper(t, _filetypes);

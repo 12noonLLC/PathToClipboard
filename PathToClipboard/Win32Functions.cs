@@ -162,12 +162,23 @@ namespace Win32Functions
 
 	public class Imports
 	{
-		[DllImport("kernel32.dll", CharSet = CharSet.Auto)]
-		internal static extern IntPtr lstrcpyn([Out] IntPtr pStringDest, IntPtr pStringSrc, UInt32 cchMax);
+		//UNUSED
+		//[DllImport("kernel32.dll", CharSet = CharSet.Auto)]
+		//internal static extern IntPtr lstrcpyn([Out] IntPtr pStringDest, IntPtr pStringSrc, UInt32 cchMax);
 
 
-		[DllImport("shell32", CharSet = CharSet.Auto)]
-		internal static extern UInt32 DragQueryFile(UInt32 hDrop, UInt32 iFile, StringBuilder buffer, Int32 cch);
+		[DllImport("shell32", CharSet = CharSet.Unicode)]
+		internal static extern uint DragQueryFile(IntPtr hDrop, uint iFile, StringBuilder buffer, uint cch);
+
+
+		/// <summary>
+		/// Free the specified storage medium.
+		/// </summary>
+		/// <param name="pmedium">
+		/// Reference of the storage medium that is to be freed.
+		/// </param>
+		[DllImport("ole32.dll", CharSet = CharSet.Unicode)]
+		public static extern void ReleaseStgMedium(ref System.Runtime.InteropServices.ComTypes.STGMEDIUM pmedium);
 
 
 		[DllImport("user32")]

@@ -35,18 +35,20 @@ namespace ShellExtension
 	{
 		private uint IDM_DISPLAY = 0;
 
-		private uint _hDrop = 0;						// HDROP representing collection of selected files
+		private System.Collections.Specialized.StringCollection _filepaths = new System.Collections.Specialized.StringCollection();
 
 
 		#region IShellExtInit Members
 
-		UInt32 MyCOMDefinitions.IShellExtInit.Initialize(IntPtr pidlFolder, IntPtr lpdobj, IntPtr hKeyProgID)
+		void MyCOMDefinitions.IShellExtInit.Initialize(IntPtr pidlFolder, IntPtr lpdobj, IntPtr hKeyProgID)
 		{
-			_hDrop = 0;
+			_filepaths.Clear();
 
 			if (lpdobj == IntPtr.Zero)
-				return 0;
+				return;	//			return 0;
 
+			IntPtr hDrop = IntPtr.Zero;	// HDROP representing collection of selected files
+			System.Runtime.InteropServices.ComTypes.STGMEDIUM medium = new System.Runtime.InteropServices.ComTypes.STGMEDIUM();
 			try
 			{
 				// Get info about the directory
@@ -57,45 +59,59 @@ namespace ShellExtension
 									System.Collections.Specialized.StringCollection files = dataobject.GetFileDropList();
 								}
 				*/
-				System.Runtime.InteropServices.ComTypes.IDataObject dataObject = (System.Runtime.InteropServices.ComTypes.IDataObject)Marshal.GetObjectForIUnknown(lpdobj);
 				System.Runtime.InteropServices.ComTypes.FORMATETC fmt = new System.Runtime.InteropServices.ComTypes.FORMATETC();
 				fmt.cfFormat = (short)Win32Functions.CLIPFORMAT.CF_HDROP;
 				fmt.ptd = IntPtr.Zero;
 				fmt.dwAspect = System.Runtime.InteropServices.ComTypes.DVASPECT.DVASPECT_CONTENT;
 				fmt.lindex = -1;
 				fmt.tymed = System.Runtime.InteropServices.ComTypes.TYMED.TYMED_HGLOBAL;
-				System.Runtime.InteropServices.ComTypes.STGMEDIUM medium = new System.Runtime.InteropServices.ComTypes.STGMEDIUM();
+
+				System.Runtime.InteropServices.ComTypes.IDataObject dataObject = (System.Runtime.InteropServices.ComTypes.IDataObject)Marshal.GetObjectForIUnknown(lpdobj);
 				dataObject.GetData(ref fmt, out medium);
-				_hDrop = (uint)medium.unionmember.ToInt32();
+				hDrop = medium.unionmember;
 			}
 			catch (Exception)
 			{
 			}
+			finally
+			{
+				Win32Functions.Imports.ReleaseStgMedium(ref medium);
+			}
 
-			return 0;
+			if (hDrop == IntPtr.Zero)
+				return;
+
+			// how many files are selected?
+			uint nSelected = Win32Functions.Imports.DragQueryFile(hDrop, uint.MaxValue, null, 0);
+			System.Diagnostics.Debug.Assert(nSelected > 0, "At least one file must be selected.");
+
+			// get each file path
+			StringBuilder sb = new StringBuilder(Win32Functions.Constants.MAX_FILE_LEN);
+			for (uint ix = 0; ix < nSelected; ++ix)
+			{
+				if (Win32Functions.Imports.DragQueryFile(hDrop, ix, sb, (uint)sb.Capacity) != 0)
+					_filepaths.Add(sb.ToString());
+			}
+
+//			return 0;
 		}
 
 		#endregion
 
 		#region IContextMenu Members
 
-		UInt32 MyCOMDefinitions.IContextMenu.QueryContextMenu(IntPtr hmenu, UInt32 ixMenu, UInt32 idCmdFirst, UInt32 idCmdLast, UInt32 uFlags)
+		int MyCOMDefinitions.IContextMenu.QueryContextMenu(IntPtr hmenu, uint ixMenu, uint idCmdFirst, uint idCmdLast, uint uFlags)
 		{
-			System.Diagnostics.Debug.Assert(idCmdFirst <= idCmdLast, "Windows bug: The first command is supposed to be less than or equal to the last command.");
-			if (_hDrop == 0)
-				return 0;
-
-			// how many files are selected?
-			uint nSelected = Win32Functions.Imports.DragQueryFile(_hDrop, 0xffffffff, null, 0);
-			System.Diagnostics.Debug.Assert(nSelected > 0, "At least one file must be selected.");
-
-			// get each file path
-			System.Collections.Specialized.StringCollection filepaths = new System.Collections.Specialized.StringCollection();
-			for (uint ix = 0; ix < nSelected; ++ix)
+			// if the user is activating the default command, do nothing
+			if ((uFlags & (uint)MyCOMDefinitions.CMF.CMF_DEFAULTONLY) != 0)
 			{
-				StringBuilder sb = new StringBuilder(Win32Functions.Constants.MAX_FILE_LEN);
-				Win32Functions.Imports.DragQueryFile(_hDrop, ix, sb, sb.Capacity);
-				filepaths.Add(sb.ToString());
+				return (int)Win32Functions.Macros.MAKE_HRESULT(Win32Functions.SEVERITY.SUCCESS, 0, 0);
+			}
+
+			System.Diagnostics.Debug.Assert(idCmdFirst <= idCmdLast, "Windows bug: The first command is supposed to be less than or equal to the last command.");
+			if (_filepaths.Count == 0)
+			{
+				return (int)Win32Functions.Macros.MAKE_HRESULT(Win32Functions.SEVERITY.SUCCESS, 0, 0);
 			}
 
 			// start menu command ids here
@@ -104,10 +120,10 @@ namespace ShellExtension
 			Win32Functions.Wrappers.Menu.FirstCommand = idCmdFirst;
 			Win32Functions.Wrappers.Menu.MenuPosition = ixMenu;
 			Win32Functions.Wrappers.Menu menuContext = new Win32Functions.Wrappers.Menu(hmenu);
-			AddMenuCommands(menuContext, filepaths);
+			AddMenuCommands(menuContext, _filepaths);
 
 			System.Diagnostics.Debug.Assert(Win32Functions.Wrappers.Menu.NextCommand - 1 <= idCmdLast, "Added more menu commands than permitted.");
-			return Win32Functions.Macros.MAKE_HRESULT(Win32Functions.SEVERITY.SUCCESS, 0, Win32Functions.Wrappers.Menu.NextCommand - Win32Functions.Wrappers.Menu.FirstCommand);
+			return (int)Win32Functions.Macros.MAKE_HRESULT(Win32Functions.SEVERITY.SUCCESS, 0, Win32Functions.Wrappers.Menu.NextCommand - Win32Functions.Wrappers.Menu.FirstCommand);
 		}
 
 		/// <summary>
@@ -147,7 +163,7 @@ namespace ShellExtension
 		abstract protected void AddMenuCommands(Win32Functions.Wrappers.Menu menuContext, System.Collections.Specialized.StringCollection filepaths);
 
 
-		UInt32 MyCOMDefinitions.IContextMenu.InvokeCommand(IntPtr pici)
+		void MyCOMDefinitions.IContextMenu.InvokeCommand(IntPtr pici)
 		{
 			try
 			{
@@ -169,11 +185,10 @@ namespace ShellExtension
 			{
 				System.Diagnostics.Trace.TraceError("InvokeCommand exception: " + ex.Message);
 			}
-			return 0;
 		}
 
 
-		UInt32 MyCOMDefinitions.IContextMenu.GetCommandString(UIntPtr idcmd, uint uflags, IntPtr reserved, StringBuilder sbCommandString, UInt32 cch)
+		void MyCOMDefinitions.IContextMenu.GetCommandString(UIntPtr idcmd, uint uflags, IntPtr reserved, StringBuilder sbCommandString, UInt32 cch)
 		{
 			if (idcmd.ToUInt32() == IDM_DISPLAY)
 			{
@@ -196,7 +211,6 @@ namespace ShellExtension
 				sbCommandString.Clear();
 				sbCommandString.Append(strText);
 			}
-			return 0;
 		}
 
 		/// <summary>
@@ -224,9 +238,13 @@ namespace ShellExtension
 
 
 		#region Registration
+
 		/*
 		 * These methods must be called by the derived class that is, ultimately, the extension.
 		 * They're invoked by regasm.exe.
+		 * 
+		 * Creating Shell Extensions
+		 * http://msdn.microsoft.com/en-us/library/cc144067(VS.85).aspx
 		 * 
 		 * Registering Shell Extension Handlers
 		 * http://msdn.microsoft.com/en-us/library/cc144110(VS.85).aspx
@@ -235,7 +253,7 @@ namespace ShellExtension
 		 * http://msdn.microsoft.com/en-us/library/ms812054.aspx
 		 */
 
-		static protected void RegisterServerHelper(Type t, string[] filetypes)
+		protected static void RegisterServerHelper(Type t, string[] filetypes)
 		{
 			string strGuid = t.GUID.ToString("B");
 
@@ -256,10 +274,26 @@ namespace ShellExtension
 				 */
 				foreach (string filetype in filetypes)
 				{
-					Microsoft.Win32.RegistryKey key = Microsoft.Win32.Registry.ClassesRoot.CreateSubKey(filetype + @"\shellex\ContextMenuHandlers\" + t.Name + " " + strGuid);
-					key.SetValue("", strGuid);
+					string keynameFileType = GetFileType(filetype);
+
+					Microsoft.Win32.RegistryKey key = Microsoft.Win32.Registry.ClassesRoot.CreateSubKey(keynameFileType + @"\shellex\ContextMenuHandlers\" + strGuid);
+					key.SetValue("", t.Name);
 					key.Close();
-					System.Console.WriteLine("Registered file type {0}", filetype);
+
+					/*
+					 * http://msdn.microsoft.com/en-us/library/bb762118.aspx
+					 * SHChangeNotify(SHCNE_ASSOCCHANGED, SHCNF_IDLIST, NULL, NULL)
+					 * 
+					 * http://www.pinvoke.net/default.aspx/shell32.shchangenotify
+					 * 
+					[DllImport("shell32.dll")]
+					static extern void SHChangeNotify(HChangeNotifyEventID wEventId, 
+																  HChangeNotifyFlags uFlags, 
+																  IntPtr dwItem1, 
+																  IntPtr dwItem2);
+					 */
+
+					System.Console.WriteLine("Registered file type {0} (from {1})", keynameFileType, filetype);
 				}
 
 				System.Console.WriteLine("Registered GUID {0}", strGuid);
@@ -270,7 +304,7 @@ namespace ShellExtension
 			}
 		}
 
-		static protected void UnregisterServerHelper(Type t, string[] filetypes)
+		protected static void UnregisterServerHelper(Type t, string[] filetypes)
 		{
 			string strGuid = t.GUID.ToString("B");
 
@@ -284,8 +318,9 @@ namespace ShellExtension
 				 */
 				foreach (string filetype in filetypes)
 				{
-					Microsoft.Win32.Registry.ClassesRoot.DeleteSubKey(filetype + @"\shellex\ContextMenuHandlers\" + t.Name + " " + strGuid);
-					System.Console.WriteLine("Unregistered file type {0}", filetype);
+					string keynameFileType = GetFileType(filetype);
+					Microsoft.Win32.Registry.ClassesRoot.DeleteSubKeyTree(keynameFileType + @"\shellex\ContextMenuHandlers\" + strGuid);
+					System.Console.WriteLine("Unregistered file type {0} (from {1})", keynameFileType, filetype);
 				}
 
 				/*
@@ -301,6 +336,30 @@ namespace ShellExtension
 			{
 				System.Console.WriteLine("Error unregistering extension: {0}", ex.Message);
 			}
+		}
+
+		private static string GetFileType(string filetype)
+		{
+			// If fileType starts with '.', try to read the default value of the 
+			// HKCR\<File Type> key which contains the ProgID to which the file type 
+			// is linked.
+			if (filetype.StartsWith("."))
+			{
+				using (Microsoft.Win32.RegistryKey keyType = Microsoft.Win32.Registry.ClassesRoot.OpenSubKey(filetype))
+				{
+					if (keyType != null)
+					{
+						// If the key exists and its default value is not empty, use 
+						// the ProgID as the file type.
+						string defaultVal = keyType.GetValue(null) as string;
+						if (!string.IsNullOrEmpty(defaultVal))
+						{
+							return defaultVal;
+						}
+					}
+				}
+			}
+			return filetype;
 		}
 
 		#endregion

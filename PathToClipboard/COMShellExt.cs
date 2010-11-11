@@ -53,25 +53,38 @@ namespace MyCOMDefinitions
 		public IntPtr hIcon;
 	}
 
-	[ComImport(), InterfaceType(ComInterfaceType.InterfaceIsIUnknown), GuidAttribute("000214e8-0000-0000-c000-000000000046")]
+	[ComImport(), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+	[Guid("000214e8-0000-0000-c000-000000000046")]
 	public interface IShellExtInit
 	{
-		[PreserveSig()]
-		UInt32 Initialize(IntPtr pidlFolder, IntPtr lpdobj, IntPtr hKeyProgID);
+		void Initialize(
+			 IntPtr /*LPCITEMIDLIST*/ pidlFolder,
+			 IntPtr /*LPDATAOBJECT*/ pDataObj,
+			 IntPtr /*HKEY*/ hKeyProgID);
 	}
 
 
-	[ComImport(), InterfaceType(ComInterfaceType.InterfaceIsIUnknown), GuidAttribute("000214e4-0000-0000-c000-000000000046")]
+	[ComImport(), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+	[Guid("000214e4-0000-0000-c000-000000000046")]
 	public interface IContextMenu
 	{
-		[PreserveSig()]
-		UInt32 QueryContextMenu(IntPtr hmenu, UInt32 iMenu, UInt32 idCmdFirst, UInt32 idCmdLast, UInt32 uFlags);
+		[PreserveSig]
+		int QueryContextMenu(
+				IntPtr /*HMENU*/ hMenu,
+				uint iMenu,
+				uint idCmdFirst,
+				uint idCmdLast,
+				uint uFlags);
 
-		[PreserveSig()]
-		UInt32 InvokeCommand(IntPtr pici);
+		void InvokeCommand(IntPtr pici);
 
-		[PreserveSig()]
-		UInt32 GetCommandString(UIntPtr idcmd, uint uflags, IntPtr reserved, StringBuilder sbCommandString, UInt32 cch);
+		void GetCommandString(
+				UIntPtr idCmd,
+				uint uFlags,
+				IntPtr pReserved,
+				StringBuilder pszName,
+				uint cchMax);
+
 //		[MarshalAs(UnmanagedType.LPStr)]
 	}
 }

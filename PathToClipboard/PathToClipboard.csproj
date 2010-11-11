@@ -88,6 +88,7 @@
     <Compile Include="Win32Functions.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="ClassDiagram1.cd" />
     <None Include="MyKeyFile.pfx" />
   </ItemGroup>
   <ItemGroup>
@@ -126,9 +127,9 @@
   </Target>
   -->
   <PropertyGroup>
-    <PostBuildEvent>echo Don't do these with a 64-bit DLL.
-echo C:\Windows\Microsoft.NET\Framework\v4.0.30319\RegAsm.exe "$(TargetPath)" /v /unregister
-echo C:\Windows\Microsoft.NET\Framework\v4.0.30319\RegAsm.exe "$(TargetPath)" /v /codebase
-echo "C:\Program Files\Microsoft SDKs\Windows\v6.0A\bin\gacutil.exe" /if "$(TargetPath)"</PostBuildEvent>
+    <PostBuildEvent>REM Don't do these with a 64-bit DLL.
+REM C:\Windows\Microsoft.NET\Framework\v4.0.30319\RegAsm.exe "$(TargetPath)" /v /unregister
+REM C:\Windows\Microsoft.NET\Framework\v4.0.30319\RegAsm.exe "$(TargetPath)" /v /codebase
+REM "C:\Program Files\Microsoft SDKs\Windows\v6.0A\bin\gacutil.exe" /if "$(TargetPath)"</PostBuildEvent>
   </PropertyGroup>
 </Project>
