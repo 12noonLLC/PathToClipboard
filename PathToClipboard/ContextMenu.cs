@@ -102,28 +102,32 @@ namespace ShellExtension
 
 		int MyCOMDefinitions.IContextMenu.QueryContextMenu(IntPtr hmenu, uint ixMenu, uint idCmdFirst, uint idCmdLast, uint uFlags)
 		{
+			Win32Functions.Wrappers.Menu.FirstCommand = idCmdFirst;	// This also clears the collection of command handlers
+			Win32Functions.Wrappers.Menu.MenuPosition = ixMenu;
+
 			// if the user is activating the default command, do nothing
 			if ((uFlags & (uint)MyCOMDefinitions.CMF.CMF_DEFAULTONLY) != 0)
 			{
-				return (int)Win32Functions.Macros.MAKE_HRESULT(Win32Functions.SEVERITY.SUCCESS, 0, 0);
+				return (int)Win32Functions.WinError.MAKE_HRESULT(Win32Functions.SEVERITY.SUCCESS, 0, 0);
 			}
 
 			System.Diagnostics.Debug.Assert(idCmdFirst <= idCmdLast, "Windows bug: The first command is supposed to be less than or equal to the last command.");
 			if (_filepaths.Count == 0)
 			{
-				return (int)Win32Functions.Macros.MAKE_HRESULT(Win32Functions.SEVERITY.SUCCESS, 0, 0);
+				return Marshal.GetHRForLastWin32Error();
 			}
 
 			// start menu command ids here
 			uint idCmdNext = idCmdFirst;
 
-			Win32Functions.Wrappers.Menu.FirstCommand = idCmdFirst;
-			Win32Functions.Wrappers.Menu.MenuPosition = ixMenu;
 			Win32Functions.Wrappers.Menu menuContext = new Win32Functions.Wrappers.Menu(hmenu);
-			AddMenuCommands(menuContext, _filepaths);
+			if (!AddMenuCommands(menuContext, _filepaths))
+			{
+				return Marshal.GetHRForLastWin32Error();
+			}
 
 			System.Diagnostics.Debug.Assert(Win32Functions.Wrappers.Menu.NextCommand - 1 <= idCmdLast, "Added more menu commands than permitted.");
-			return (int)Win32Functions.Macros.MAKE_HRESULT(Win32Functions.SEVERITY.SUCCESS, 0, Win32Functions.Wrappers.Menu.NextCommand - Win32Functions.Wrappers.Menu.FirstCommand);
+			return (int)Win32Functions.WinError.MAKE_HRESULT(Win32Functions.SEVERITY.SUCCESS, 0, Win32Functions.Wrappers.Menu.NextCommand - Win32Functions.Wrappers.Menu.FirstCommand);
 		}
 
 		/// <summary>
@@ -160,11 +164,12 @@ namespace ShellExtension
 		/// }
 		/// </code>
 		/// </example>
-		abstract protected void AddMenuCommands(Win32Functions.Wrappers.Menu menuContext, System.Collections.Specialized.StringCollection filepaths);
+		abstract protected bool AddMenuCommands(Win32Functions.Wrappers.Menu menuContext, System.Collections.Specialized.StringCollection filepaths);
 
 
 		void MyCOMDefinitions.IContextMenu.InvokeCommand(IntPtr pici)
 		{
+//TODO: DELME & use below code (that's more accurate)
 			try
 			{
 				/*
@@ -172,19 +177,109 @@ namespace ShellExtension
 				 * Type typINVOKECOMMANDINFO = Type.GetType("MyCOMDefinitions.INVOKECOMMANDINFO");
 				 * but it's more error-prone (if a type's name changes).
 				 */
-				Type typINVOKECOMMANDINFO = typeof(MyCOMDefinitions.INVOKECOMMANDINFO);
-				MyCOMDefinitions.INVOKECOMMANDINFO ici = (MyCOMDefinitions.INVOKECOMMANDINFO)Marshal.PtrToStructure(pici, typINVOKECOMMANDINFO);
-				/*
-				 * First command: verb == 0
-				 * Second command: verb == 1
-				 * etc.
-				 */
-				Win32Functions.Wrappers.Menu.CallCommandHandler(ici.verb);
+				Type typINVOKECOMMANDINFO = typeof(MyCOMDefinitions.CMINVOKECOMMANDINFO);
+				MyCOMDefinitions.CMINVOKECOMMANDINFO ici = (MyCOMDefinitions.CMINVOKECOMMANDINFO)Marshal.PtrToStructure(pici, typINVOKECOMMANDINFO);
+
+				if (Win32Functions.Macros.HighWord(ici.lpVerb.ToInt32()) == 0)
+				{
+					/*
+					 * First command: verb == 0
+					 * Second command: verb == 1
+					 * etc.
+					 */
+					int offsetCommand = Win32Functions.Macros.LowWord(ici.lpVerb.ToInt32());
+					if (Win32Functions.Wrappers.Menu.CallCommandHandler((uint)offsetCommand))
+					{
+						return;
+					}
+				}
 			}
 			catch (Exception ex)
 			{
 				System.Diagnostics.Trace.TraceError("InvokeCommand exception: " + ex.Message);
 			}
+
+			// If the verb is not recognized by the context menu handler, it
+			// must return E_FAIL to allow it to be passed on to the other
+			// context menu handlers that might implement that verb.
+			Marshal.ThrowExceptionForHR(Win32Functions.WinError.E_FAIL);
+
+
+//         bool isUnicode = false;
+
+//         // Determine which structure is being passed in, CMINVOKECOMMANDINFO or 
+//         // CMINVOKECOMMANDINFOEX based on the cbSize member of lpcmi. Although 
+//         // the lpcmi parameter is declared in Shlobj.h as a CMINVOKECOMMANDINFO 
+//         // structure, in practice it often points to a CMINVOKECOMMANDINFOEX 
+//         // structure. This struct is an extended version of CMINVOKECOMMANDINFO 
+//         // and has additional members that allow Unicode strings to be passed.
+//         MyCOMDefinitions.CMINVOKECOMMANDINFO ici = (MyCOMDefinitions.CMINVOKECOMMANDINFO)Marshal.PtrToStructure(pici, typeof(MyCOMDefinitions.CMINVOKECOMMANDINFO));
+//         MyCOMDefinitions.CMINVOKECOMMANDINFOEX iciex = new MyCOMDefinitions.CMINVOKECOMMANDINFOEX();
+//         if (ici.cbSize == Marshal.SizeOf(typeof(MyCOMDefinitions.CMINVOKECOMMANDINFOEX)))
+//         {
+//            if ((ici.fMask & MyCOMDefinitions.CMIC.CMIC_MASK_UNICODE) != 0)
+//            {
+//               isUnicode = true;
+//               iciex = (MyCOMDefinitions.CMINVOKECOMMANDINFOEX)Marshal.PtrToStructure(pici, typeof(MyCOMDefinitions.CMINVOKECOMMANDINFOEX));
+//            }
+//         }
+
+//         // Determines whether the command is identified by its offset or verb.
+//         // There are two ways to identify commands:
+//         // 
+//         //   1) The command's verb string 
+//         //   2) The command's identifier offset
+//         // 
+//         // If the high-order word of lpcmi->lpVerb (for the ANSI case) or 
+//         // lpcmi->lpVerbW (for the Unicode case) is nonzero, lpVerb or lpVerbW 
+//         // holds a verb string. If the high-order word is zero, the command 
+//         // offset is in the low-order word of lpcmi->lpVerb.
+
+//         // For the ANSI case, if the high-order word is not zero, the command's 
+//         // verb string is in lpcmi->lpVerb. 
+//         if (!isUnicode && Win32Functions.Macros.HighWord(ici.lpVerb.ToInt32()) != 0)
+//         {
+//            // Is the verb supported by this context menu extension?
+//            if (Marshal.PtrToStringAnsi(ici.lpVerb) == GetCommandStringVerb())
+//            {
+////TODO: Really should pass ici.lpVerb
+//               Win32Functions.Wrappers.Menu.CallCommandHandler(0);
+//            }
+//            else
+//            {
+//               // If the verb is not recognized by the context menu handler, it 
+//               // must return E_FAIL to allow it to be passed on to the other 
+//               // context menu handlers that might implement that verb.
+//               Marshal.ThrowExceptionForHR(Win32Functions.WinError.E_FAIL);
+//            }
+//         }
+//         // For the Unicode case, if the high-order word is not zero, the 
+//         // command's verb string is in lpcmi->lpVerbW. 
+//         else if (isUnicode && Win32Functions.Macros.HighWord(iciex.lpVerbW.ToInt32()) != 0)
+//         {
+//            // Is the verb supported by this context menu extension?
+//            if (Marshal.PtrToStringUni(iciex.lpVerbW) == GetCommandStringVerb())
+//            {
+////TODO: Really should pass iciex.lpVerbW
+//               Win32Functions.Wrappers.Menu.CallCommandHandler(0);
+//            }
+//            else
+//            {
+//               // If the verb is not recognized by the context menu handler, it 
+//               // must return E_FAIL to allow it to be passed on to the other 
+//               // context menu handlers that might implement that verb.
+//               Marshal.ThrowExceptionForHR(Win32Functions.WinError.E_FAIL);
+//            }
+//         }
+//         // If the command cannot be identified through the verb string, then 
+//         // check the identifier offset.
+//         else
+//         {
+//            System.Diagnostics.Debug.Assert(Win32Functions.Macros.HighWord(iciex.lpVerbW.ToInt32()) == 0);
+
+//            int ixCmd = Win32Functions.Macros.LowWord(ici.lpVerb.ToInt32());
+//            Win32Functions.Wrappers.Menu.CallCommandHandler((uint)ixCmd);
+//         }
 		}
 
 
@@ -196,7 +291,7 @@ namespace ShellExtension
 
 				if (((MyCOMDefinitions.GCS)uflags == MyCOMDefinitions.GCS.VERBA) || ((MyCOMDefinitions.GCS)uflags == MyCOMDefinitions.GCS.VERBW))
 				{
-					strText = GetCommandStringVerb();
+					strText = GetCommandStringCanonicalVerb();
 				}
 				else if (((MyCOMDefinitions.GCS)uflags == MyCOMDefinitions.GCS.HELPTEXTA) || ((MyCOMDefinitions.GCS)uflags == MyCOMDefinitions.GCS.HELPTEXTW))
 				{
@@ -218,6 +313,15 @@ namespace ShellExtension
 		/// </summary>
 		/// <returns>The string to use as the verb</returns>
 		virtual protected string GetCommandStringVerb()
+		{
+			return string.Empty;
+		}
+
+		/// <summary>
+		/// Override this function to return specific text for the canonical verb.
+		/// </summary>
+		/// <returns>The string to use as the verb</returns>
+		virtual protected string GetCommandStringCanonicalVerb()
 		{
 			return string.Empty;
 		}

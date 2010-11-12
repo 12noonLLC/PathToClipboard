@@ -11,10 +11,23 @@ namespace PathToClipboard	// WHY: PathToClipboardExtension doesn't work
 	[Guid("2E820618-9430-421b-8FA5-12BD9E31EEF3"), ComVisible(true)]
 	public class PathToClipboard : ShellExtension.ContextMenu
 	{
-		override protected void AddMenuCommands(Win32Functions.Wrappers.Menu menuContext, System.Collections.Specialized.StringCollection filepaths)
+		// We don't really use the verb. Presumably, it'd have to be set in the Registry so Windows could pass it to InvokeCommand().
+		private const string _verb = "p2c";
+		private const string _verbCanonicalName = "PathToClipboard";
+		private const string _verbHelpText = "Copy this text to the clipboard";
+
+
+//TODO: Use String.Format() and create constants
+		/// <summary>
+		/// Add commands to the context menu.
+		/// </summary>
+		/// <param name="menuContext"></param>
+		/// <param name="filepaths"></param>
+		/// <returns>True if it adds any commands; false if not.</returns>
+		override protected bool AddMenuCommands(Win32Functions.Wrappers.Menu menuContext, System.Collections.Specialized.StringCollection filepaths)
 		{
 			if (filepaths.Count == 0)
-				return;
+				return false;
 
 			Win32Functions.Wrappers.MenuPopup menuPopup = new Win32Functions.Wrappers.MenuPopup("Path to clipboard");
 
@@ -68,16 +81,33 @@ namespace PathToClipboard	// WHY: PathToClipboardExtension doesn't work
 			}
 
 			menuContext.InsertMenuPopup(menuPopup);
+
+			/*
+			 * Note: This is called when selecting a jump list's command.
+			 */
+//string all = String.Empty;
+//foreach (string s in filepaths)
+//{
+//   all += s;
+//   all += " ";
+//}
+//System.Windows.Forms.MessageBox.Show(all);
+			return true;
 		}
 
 		override protected string GetCommandStringVerb()
 		{
-			return "PathToClipboard";
+			return _verb;
+		}
+
+		override protected string GetCommandStringCanonicalVerb()
+		{
+			return _verbCanonicalName;
 		}
 
 		override protected string GetCommandStringHelp(uint ixCmd)
 		{
-			return "Copy this text to the clipboard";
+			return _verbHelpText;
 		}
 
 

@@ -24,12 +24,44 @@ namespace Win32Functions
 		ERROR = 1
 	}
 
-	public class Macros
+	internal static class WinError
 	{
-		static public UInt32 MAKE_HRESULT(SEVERITY sev, UInt32 fac, UInt32 code)
+		public const int S_OK = 0x0000;
+		public const int S_FALSE = 0x0001;
+		public const int E_FAIL = -2147467259;
+		public const int E_INVALIDARG = -2147024809;
+		public const int E_OUTOFMEMORY = -2147024882;
+		public const int STRSAFE_E_INSUFFICIENT_BUFFER = -2147024774;
+
+		public const uint SEVERITY_SUCCESS = 0;
+		public const uint SEVERITY_ERROR = 1;
+
+		/// <summary>
+		/// Create an HRESULT value from component pieces.
+		/// </summary>
+		/// <param name="sev">The severity to be used</param>
+		/// <param name="fac">The facility to be used</param>
+		/// <param name="code">The error number</param>
+		/// <returns>A HRESULT constructed from the above 3 values</returns>
+//		public static int MAKE_HRESULT(uint sev, uint fac, uint code)
+		public static UInt32 MAKE_HRESULT(SEVERITY sev, UInt32 fac, UInt32 code)
 		{
 			// (HRESULT) (((unsigned long)(sev)<<31) | ((unsigned long)(fac)<<16) | ((unsigned long)(code)))
 			return ((UInt32)sev << 31) | (fac << 16) | code;
+		}
+
+	}
+
+	public class Macros
+	{
+		public static int HighWord(int number)
+		{
+			return ((number & 0x80000000) == 0x80000000) ? (number >> 16) : ((number >> 16) & 0xffff);
+		}
+
+		public static int LowWord(int number)
+		{
+			return (number & 0xffff);
 		}
 	}
 
@@ -351,6 +383,7 @@ namespace Win32Functions
 				}
 			}
 
+//TODO: Use implicit properties (del member var and use { get; private set; }
 			static private uint _idNextCommand = 0;
 			static public uint NextCommand
 			{
@@ -359,6 +392,7 @@ namespace Win32Functions
 
 			//----------------------------------------------------------------
 
+//TODO: Use implicit properties (del member var and use { get; set; }
 			static private uint _ixMenuPosition = 0;
 			static public uint MenuPosition
 			{
@@ -384,6 +418,9 @@ namespace Win32Functions
 			}
 
 
+			/*
+			 * This collection maps a command offset (not ID) to a delegate and the data to pass to the delegate
+			 */
 			public delegate void MenuDelegate(uint id, object data);
 			static protected System.Collections.Generic.Dictionary<uint, System.Collections.Generic.KeyValuePair<MenuDelegate, object>> _commandhandlers = new System.Collections.Generic.Dictionary<uint, System.Collections.Generic.KeyValuePair<MenuDelegate, object>>();
 
@@ -402,29 +439,45 @@ namespace Win32Functions
 				System.Diagnostics.Debug.Assert(_idFirstCommand != 0, "FirstCommand must be initialized.");
 				System.Diagnostics.Debug.Assert(_idNextCommand != 0, "NextCommand must be initialized.");
 
-				// add this command id and its handler 
-				_commandhandlers.Add(_idNextCommand - _idFirstCommand, new System.Collections.Generic.KeyValuePair<MenuDelegate, object>(handler, data));
+				// add this command id and its handler
+				uint offsetCommand = _idNextCommand - _idFirstCommand;
+				_commandhandlers.Add(offsetCommand, new System.Collections.Generic.KeyValuePair<MenuDelegate, object>(handler, data));
 				++_idNextCommand;
 
-				return _idNextCommand - _idFirstCommand - 1;
+				return offsetCommand;
 			}
 
-			static public System.Collections.Generic.KeyValuePair<MenuDelegate, object> GetCommandHandler(uint idMenuCommandOffset)
+			//static private System.Collections.Generic.KeyValuePair<MenuDelegate, object> GetCommandHandler(uint idMenuCommandOffset)
+			//{
+			//   /*
+			//    * It's either this or catch KeyNotFoundException thrown by dic[key].
+			//    */
+			//   System.Collections.Generic.KeyValuePair<MenuDelegate, object> handler;
+			//   _commandhandlers.TryGetValue(idMenuCommandOffset, out handler);
+			//   return handler;
+			//}
+
+			/// <summary>
+			/// Calls the delegate associated with the passed menu command offset (not ID).
+			/// </summary>
+			/// <param name="offsetCommand">Offset of menu command</param>
+			/// <returns>True if it finds the command offset and calls its handler.</returns>
+			static public bool CallCommandHandler(uint offsetCommand)
 			{
 				/*
 				 * It's either this or catch KeyNotFoundException thrown by dic[key].
 				 */
-				System.Collections.Generic.KeyValuePair<MenuDelegate, object> handler;
-				_commandhandlers.TryGetValue(idMenuCommandOffset, out handler);
-				return handler;
-			}
+				System.Collections.Generic.KeyValuePair<MenuDelegate, object> pairHandlerData;
+				if (!_commandhandlers.TryGetValue(offsetCommand, out pairHandlerData))
+					return false;
 
-			static public void CallCommandHandler(uint ixCmd)
-			{
-				System.Collections.Generic.KeyValuePair<MenuDelegate, object> bag = Menu.GetCommandHandler(ixCmd);
-				MenuDelegate handler = bag.Key;
-				if (handler != null)
-					handler(ixCmd, bag.Value);
+				MenuDelegate handler = pairHandlerData.Key;
+				System.Diagnostics.Debug.Assert(handler != null);
+				if (handler == null)
+					return false;
+
+				handler(offsetCommand, pairHandlerData.Value);
+				return true;
 			}
 
 
