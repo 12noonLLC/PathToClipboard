@@ -5,13 +5,14 @@ using System.Runtime.InteropServices;
 
 namespace Win32Functions
 {
-	abstract public class Constants
+	internal static class Constants
 	{
 		public const int MAX_FILE_LEN = 1024;
 
 		public const int NOERROR = 0;
 		public const int ERROR_MORE_DATA = 234;
 		public const int ERROR_BAD_DEVICE = 1200;
+		public const int ERROR_NO_NET_OR_BAD_PATH = 1203;
 		public const int ERROR_NOT_CONNECTED = 2250;
 		public const int STRSAFE_E_INSUFFICIENT_BUFFER = -2147024774;
 	}
@@ -176,7 +177,7 @@ namespace Win32Functions
 		CF_GDIOBJLAST = 0x03FF
 	}
 
-	public enum NAME_INFO_LEVEL : uint
+	internal enum NAME_INFO_LEVEL : uint
 	{
 		UNIVERSAL_NAME_INFO_LEVEL	= 0x000000001,
 		REMOTE_NAME_INFO_LEVEL		= 0x000000002
@@ -257,6 +258,7 @@ namespace Win32Functions
 		[DllImport("user32", CharSet = CharSet.Unicode)]
 		internal static extern Boolean InsertMenu(IntPtr hmenu, UInt32 position, MF_WIN40 uflags, IntPtr uIDNewItemOrSubmenu, string text);
 
+// 12 Nov 2010: To get this to work, see shell context menu extension in http://1code.codeplex.com
 //Can't get this to work (on 2003). Probably the string member of MENUITEMINFO. Maybe it should marshal as IntPtr.
 //http://www.pinvoke.net/default.aspx/Interfaces/IContextMenu.html
 //            /*
@@ -281,7 +283,7 @@ namespace Win32Functions
 //            }
 //            ++idCmdNext;
 //            ++ixMenu;
-		[DllImport("user32", CharSet = CharSet.Unicode, SetLastError=true)]
+		[DllImport("user32", CharSet = CharSet.Unicode, SetLastError = true)]
 		internal static extern Boolean InsertMenuItem(IntPtr hmenu,
 																	uint iItem,
 																	[MarshalAs(UnmanagedType.Bool)]bool bByPosition,
@@ -295,10 +297,18 @@ namespace Win32Functions
 																				  native int lpBuffer,
 																				  int32&  marshal( unsigned int32) lpBufferSize) cil managed preservesig
 */
-		[DllImport("mpr.dll", CharSet = CharSet.Auto, SetLastError = true)]
-		internal static extern UInt32 WNetGetUniversalName(string lpLocalPath, NAME_INFO_LEVEL dwInfoLevel, IntPtr lpBuffer, ref UInt32 lpBufferSize);
+//		[DllImport("mpr.dll", CharSet = CharSet.Auto, SetLastError = true)]
+//		internal static extern UInt32 WNetGetUniversalName(string lpLocalPath, NAME_INFO_LEVEL dwInfoLevel, IntPtr lpBuffer, ref UInt32 lpBufferSize);
 //[DllImport("mpr.dll", CharSet = CharSet.Auto, SetLastError = true)]
 //internal static extern UInt32 WNetGetUniversalName(string lpLocalPath, NAME_INFO_LEVEL dwInfoLevel, ref UNIVERSAL_NAME_INFO lpBuffer, ref UInt32 lpBufferSize);
+		// REF: http://www.pinvoke.net/default.aspx/advapi32/WNetGetUniversalName.html
+		[DllImport("mpr.dll")]
+		[return: MarshalAs(UnmanagedType.U4)]
+		internal static extern int WNetGetUniversalName(
+																	 string lpLocalPath,
+																	 [MarshalAs(UnmanagedType.U4)] int dwInfoLevel,
+																	 IntPtr lpBuffer,
+																	 [MarshalAs(UnmanagedType.U4)] ref int lpBufferSize);
 	}
 
 	#endregion
@@ -317,42 +327,60 @@ namespace Win32Functions
  * http://forums.microsoft.com/MSDN/ShowPost.aspx?PostID=2157648&SiteID=1
  * http://www.utteraccess.com/forums/showflat.php?Cat=&Board=93&Number=1281885&Zf=&Zw=&Zg=2&Zl=b&Main=1281742&Search=true&where=&Zu=15840&Zd=l&Zn=&Zt=3e8&Zs=&Zy=
  */
-			static public string WNetGetUniversalName(string strFilepath)
+			/*
+			 * REF: http://www.pinvoke.net/default.aspx/advapi32/WNetGetUniversalName.html
+			 */
+			public static string WNetGetUniversalName(string strFilepath)
 			{
+				string retVal = null;
+
 				/*
 				 * Get the size of the string that will be returned.
 				 */
-				UInt32 cb = 2;
-				IntPtr pBuffer = Marshal.AllocCoTaskMem((int)cb);
+				IntPtr pBuffer = IntPtr.Zero;
 				try
 				{
-					//UNIVERSAL_NAME_INFO uni = new UNIVERSAL_NAME_INFO();
-					//cch = (UInt32)Marshal.SizeOf(uni);
-					//UInt32 rc = Win32Functions.Imports.WNetGetUniversalName(strFilepath, Win32Functions.NAME_INFO_LEVEL.UNIVERSAL_NAME_INFO_LEVEL,
-					//                                                         ref uni, ref cch);
-					UInt32 rc = Win32Functions.Imports.WNetGetUniversalName(strFilepath, Win32Functions.NAME_INFO_LEVEL.UNIVERSAL_NAME_INFO_LEVEL,
-					                                                         pBuffer, ref cb);
-					if (rc == Constants.ERROR_NOT_CONNECTED)
-						return Constants.ERROR_NOT_CONNECTED.ToString();
-					if (rc != Constants.ERROR_MORE_DATA)
-						return rc.ToString();
+					// First, call WNetGetUniversalName to get the size.
+					int size = 0;
+
+					// Make the call.
+					// Pass IntPtr.Size because the API doesn't like null, even though
+					// size is zero.  We know that IntPtr.Size will be
+					// aligned correctly.
+					int apiRetVal = Win32Functions.Imports.WNetGetUniversalName(strFilepath, (int)Win32Functions.NAME_INFO_LEVEL.UNIVERSAL_NAME_INFO_LEVEL, (IntPtr)IntPtr.Size, ref size);
+					// If the return value is not ERROR_MORE_DATA, then raise an exception.
+					if (apiRetVal != Constants.ERROR_MORE_DATA)
+					{
+						// Throw an exception.
+						Marshal.ThrowExceptionForHR(apiRetVal);
+						return null;
+					}
+
+					// Allocate the memory.
+					pBuffer = Marshal.AllocCoTaskMem(size);
 
 					//UNIVERSAL_NAME_INFO uni = new UNIVERSAL_NAME_INFO();
 					//cch = (UInt32)Marshal.SizeOf(uni);
-					//rc = Win32Functions.Imports.WNetGetUniversalName(strFilepath, Win32Functions.NAME_INFO_LEVEL.UNIVERSAL_NAME_INFO_LEVEL,
-					//                                                   ref uni, ref cch);
+					//UInt32 rc = Win32Functions.Imports.WNetGetUniversalName(strFilepath, Win32Functions.NAME_INFO_LEVEL.UNIVERSAL_NAME_INFO_LEVEL, ref uni, ref cch);
+					apiRetVal = Win32Functions.Imports.WNetGetUniversalName(strFilepath, (int)Win32Functions.NAME_INFO_LEVEL.UNIVERSAL_NAME_INFO_LEVEL, pBuffer, ref size);
+					if (apiRetVal != Constants.NOERROR)
+					{
+						// Throw an exception.
+						Marshal.ThrowExceptionForHR(apiRetVal);
+						return null;
+					}
+
+					// Now get the string.  It's all in the same buffer, but the pointer is first,
+					// so offset the pointer by IntPtr.Size and pass to PtrToStringAnsi.
+					retVal = Marshal.PtrToStringAnsi(new IntPtr(pBuffer.ToInt64() + IntPtr.Size), size);
+					retVal = retVal.Substring(0, retVal.IndexOf('\0'));
 				}
 				finally
 				{
 					Marshal.FreeCoTaskMem(pBuffer);
 				}
-				System.Diagnostics.Trace.TraceInformation("Path len = {0}", cb);
 
-				StringBuilder sb = new StringBuilder(Win32Functions.Constants.MAX_FILE_LEN);
-
-//				Win32Functions.Imports.WNetGetUniversalName(strFilepath, Win32Functions.NAME_INFO_LEVEL.UNIVERSAL_NAME_INFO_LEVEL, out sb, ref cch);
-
-				return sb.ToString();
+				return retVal;
 			}
 		}
 

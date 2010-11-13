@@ -119,8 +119,6 @@ namespace ShellExtension
 			{
 				Win32Functions.Imports.ReleaseStgMedium(ref medium);
 			}
-
-//			return 0;
 		}
 
 		#endregion
@@ -197,116 +195,134 @@ namespace ShellExtension
 		void MyCOMDefinitions.IContextMenu.InvokeCommand(IntPtr pici)
 		{
 //TODO: DELME & use below code (that's more accurate)
-			try
-			{
-				/*
-				 * This also works:
-				 * Type typINVOKECOMMANDINFO = Type.GetType("MyCOMDefinitions.INVOKECOMMANDINFO");
-				 * but it's more error-prone (if a type's name changes).
-				 */
-				Type typINVOKECOMMANDINFO = typeof(MyCOMDefinitions.CMINVOKECOMMANDINFO);
-				MyCOMDefinitions.CMINVOKECOMMANDINFO ici = (MyCOMDefinitions.CMINVOKECOMMANDINFO)Marshal.PtrToStructure(pici, typINVOKECOMMANDINFO);
+			//try
+			//{
+			//   /*
+			//    * This also works:
+			//    * Type typINVOKECOMMANDINFO = Type.GetType("MyCOMDefinitions.INVOKECOMMANDINFO");
+			//    * but it's more error-prone (if a type's name changes).
+			//    */
+			//   Type typINVOKECOMMANDINFO = typeof(MyCOMDefinitions.CMINVOKECOMMANDINFO);
+			//   MyCOMDefinitions.CMINVOKECOMMANDINFO ici = (MyCOMDefinitions.CMINVOKECOMMANDINFO)Marshal.PtrToStructure(pici, typINVOKECOMMANDINFO);
 
-				if (Win32Functions.Macros.HighWord(ici.lpVerb.ToInt32()) == 0)
+			//   if (Win32Functions.Macros.HighWord(ici.lpVerb.ToInt32()) == 0)
+			//   {
+			//      /*
+			//       * First command: verb == 0
+			//       * Second command: verb == 1
+			//       * etc.
+			//       */
+			//      int offsetCommand = Win32Functions.Macros.LowWord(ici.lpVerb.ToInt32());
+			//      if (Win32Functions.Wrappers.Menu.CallCommandHandler((uint)offsetCommand))
+			//      {
+			//         return;
+			//      }
+			//   }
+			//}
+			//catch (Exception ex)
+			//{
+			//   System.Diagnostics.Trace.TraceError("InvokeCommand exception: " + ex.Message);
+			//}
+
+			//// If the verb is not recognized by the context menu handler, it
+			//// must return E_FAIL to allow it to be passed on to the other
+			//// context menu handlers that might implement that verb.
+			//Marshal.ThrowExceptionForHR(Win32Functions.WinError.E_FAIL);
+
+
+
+			bool isUnicode = false;
+
+			// Determine which structure is being passed in, CMINVOKECOMMANDINFO or 
+			// CMINVOKECOMMANDINFOEX based on the cbSize member of lpcmi. Although 
+			// the lpcmi parameter is declared in Shlobj.h as a CMINVOKECOMMANDINFO 
+			// structure, in practice it often points to a CMINVOKECOMMANDINFOEX 
+			// structure. This struct is an extended version of CMINVOKECOMMANDINFO 
+			// and has additional members that allow Unicode strings to be passed.
+			MyCOMDefinitions.CMINVOKECOMMANDINFO ici = (MyCOMDefinitions.CMINVOKECOMMANDINFO)Marshal.PtrToStructure(pici, typeof(MyCOMDefinitions.CMINVOKECOMMANDINFO));
+			MyCOMDefinitions.CMINVOKECOMMANDINFOEX iciex = new MyCOMDefinitions.CMINVOKECOMMANDINFOEX();
+			if (ici.cbSize == Marshal.SizeOf(typeof(MyCOMDefinitions.CMINVOKECOMMANDINFOEX)))
+			{
+				if ((ici.fMask & MyCOMDefinitions.CMIC.CMIC_MASK_UNICODE) != 0)
+				{
+					isUnicode = true;
+					iciex = (MyCOMDefinitions.CMINVOKECOMMANDINFOEX)Marshal.PtrToStructure(pici, typeof(MyCOMDefinitions.CMINVOKECOMMANDINFOEX));
+				}
+			}
+
+			// Determines whether the command is identified by its offset or verb.
+			// There are two ways to identify commands:
+			// 
+			//   1) The command's verb string 
+			//   2) The command's identifier offset
+			// 
+			// If the high-order word of lpcmi->lpVerb (for the ANSI case) or 
+			// lpcmi->lpVerbW (for the Unicode case) is nonzero, lpVerb or lpVerbW 
+			// holds a verb string. If the high-order word is zero, the command 
+			// offset is in the low-order word of lpcmi->lpVerb.
+
+			// For the ANSI case, if the high-order word is not zero, the command's 
+			// verb string is in lpcmi->lpVerb. 
+			if (!isUnicode && Win32Functions.Macros.HighWord(ici.lpVerb.ToInt32()) != 0)
+			{
+				// Is the verb supported by this context menu extension?
+				if (Marshal.PtrToStringAnsi(ici.lpVerb) == GetCommandStringVerb())
 				{
 					/*
-					 * First command: verb == 0
-					 * Second command: verb == 1
-					 * etc.
+					 * If we were really processing verbs, we'd have to:
+					 *		1. Add the verb to the Registry
+					 *		2. Call a different command handler to process the verb (not the command ID)
+					 *	
+					 * Can pass useful things to the handler, such as: ici.hwnd
 					 */
-					int offsetCommand = Win32Functions.Macros.LowWord(ici.lpVerb.ToInt32());
-					if (Win32Functions.Wrappers.Menu.CallCommandHandler((uint)offsetCommand))
+					if (Win32Functions.Wrappers.Menu.CallCommandHandler(0 /*dummy ID*/))
 					{
 						return;
 					}
 				}
 			}
-			catch (Exception ex)
+			// For the Unicode case, if the high-order word is not zero, the 
+			// command's verb string is in lpcmi->lpVerbW. 
+			else if (isUnicode && Win32Functions.Macros.HighWord(iciex.lpVerbW.ToInt32()) != 0)
 			{
-				System.Diagnostics.Trace.TraceError("InvokeCommand exception: " + ex.Message);
+				// Is the verb supported by this context menu extension?
+				if (Marshal.PtrToStringUni(iciex.lpVerbW) == GetCommandStringVerb())
+				{
+					/*
+					 * If we were really processing verbs, we'd have to:
+					 *		1. Add the verb to the Registry
+					 *		2. Call a different command handler to process the verb (not the command ID)
+					 *	
+					 * Can pass useful things to the handler, such as: ici.hwnd
+					 */
+					if (Win32Functions.Wrappers.Menu.CallCommandHandler(0 /*dummy ID*/))
+					{
+						return;
+					}
+				}
+			}
+			// If the command cannot be identified through the verb string, then 
+			// check the identifier offset.
+			else
+			{
+				System.Diagnostics.Debug.Assert(Win32Functions.Macros.HighWord(iciex.lpVerbW.ToInt32()) == 0);
+
+			   /*
+			      * First command: verb == 0
+			      * Second command: verb == 1
+			      * etc.
+			      */
+			   int offsetCommand = Win32Functions.Macros.LowWord(ici.lpVerb.ToInt32());
+				if (Win32Functions.Wrappers.Menu.CallCommandHandler((uint)offsetCommand))
+				{
+					return;
+				}
 			}
 
 			// If the verb is not recognized by the context menu handler, it
 			// must return E_FAIL to allow it to be passed on to the other
 			// context menu handlers that might implement that verb.
 			Marshal.ThrowExceptionForHR(Win32Functions.WinError.E_FAIL);
-
-
-//         bool isUnicode = false;
-
-//         // Determine which structure is being passed in, CMINVOKECOMMANDINFO or 
-//         // CMINVOKECOMMANDINFOEX based on the cbSize member of lpcmi. Although 
-//         // the lpcmi parameter is declared in Shlobj.h as a CMINVOKECOMMANDINFO 
-//         // structure, in practice it often points to a CMINVOKECOMMANDINFOEX 
-//         // structure. This struct is an extended version of CMINVOKECOMMANDINFO 
-//         // and has additional members that allow Unicode strings to be passed.
-//         MyCOMDefinitions.CMINVOKECOMMANDINFO ici = (MyCOMDefinitions.CMINVOKECOMMANDINFO)Marshal.PtrToStructure(pici, typeof(MyCOMDefinitions.CMINVOKECOMMANDINFO));
-//         MyCOMDefinitions.CMINVOKECOMMANDINFOEX iciex = new MyCOMDefinitions.CMINVOKECOMMANDINFOEX();
-//         if (ici.cbSize == Marshal.SizeOf(typeof(MyCOMDefinitions.CMINVOKECOMMANDINFOEX)))
-//         {
-//            if ((ici.fMask & MyCOMDefinitions.CMIC.CMIC_MASK_UNICODE) != 0)
-//            {
-//               isUnicode = true;
-//               iciex = (MyCOMDefinitions.CMINVOKECOMMANDINFOEX)Marshal.PtrToStructure(pici, typeof(MyCOMDefinitions.CMINVOKECOMMANDINFOEX));
-//            }
-//         }
-
-//         // Determines whether the command is identified by its offset or verb.
-//         // There are two ways to identify commands:
-//         // 
-//         //   1) The command's verb string 
-//         //   2) The command's identifier offset
-//         // 
-//         // If the high-order word of lpcmi->lpVerb (for the ANSI case) or 
-//         // lpcmi->lpVerbW (for the Unicode case) is nonzero, lpVerb or lpVerbW 
-//         // holds a verb string. If the high-order word is zero, the command 
-//         // offset is in the low-order word of lpcmi->lpVerb.
-
-//         // For the ANSI case, if the high-order word is not zero, the command's 
-//         // verb string is in lpcmi->lpVerb. 
-//         if (!isUnicode && Win32Functions.Macros.HighWord(ici.lpVerb.ToInt32()) != 0)
-//         {
-//            // Is the verb supported by this context menu extension?
-//            if (Marshal.PtrToStringAnsi(ici.lpVerb) == GetCommandStringVerb())
-//            {
-////TODO: Really should pass ici.lpVerb
-//               Win32Functions.Wrappers.Menu.CallCommandHandler(0);
-//            }
-//            else
-//            {
-//               // If the verb is not recognized by the context menu handler, it 
-//               // must return E_FAIL to allow it to be passed on to the other 
-//               // context menu handlers that might implement that verb.
-//               Marshal.ThrowExceptionForHR(Win32Functions.WinError.E_FAIL);
-//            }
-//         }
-//         // For the Unicode case, if the high-order word is not zero, the 
-//         // command's verb string is in lpcmi->lpVerbW. 
-//         else if (isUnicode && Win32Functions.Macros.HighWord(iciex.lpVerbW.ToInt32()) != 0)
-//         {
-//            // Is the verb supported by this context menu extension?
-//            if (Marshal.PtrToStringUni(iciex.lpVerbW) == GetCommandStringVerb())
-//            {
-////TODO: Really should pass iciex.lpVerbW
-//               Win32Functions.Wrappers.Menu.CallCommandHandler(0);
-//            }
-//            else
-//            {
-//               // If the verb is not recognized by the context menu handler, it 
-//               // must return E_FAIL to allow it to be passed on to the other 
-//               // context menu handlers that might implement that verb.
-//               Marshal.ThrowExceptionForHR(Win32Functions.WinError.E_FAIL);
-//            }
-//         }
-//         // If the command cannot be identified through the verb string, then 
-//         // check the identifier offset.
-//         else
-//         {
-//            System.Diagnostics.Debug.Assert(Win32Functions.Macros.HighWord(iciex.lpVerbW.ToInt32()) == 0);
-
-//            int ixCmd = Win32Functions.Macros.LowWord(ici.lpVerb.ToInt32());
-//            Win32Functions.Wrappers.Menu.CallCommandHandler((uint)ixCmd);
-//         }
 		}
 
 
@@ -328,6 +344,7 @@ namespace ShellExtension
 				if (strText.Length > cch - 1)
 				{
 					Marshal.ThrowExceptionForHR(Win32Functions.Constants.STRSAFE_E_INSUFFICIENT_BUFFER);
+					return;
 				}
 
 				sbCommandString.Clear();

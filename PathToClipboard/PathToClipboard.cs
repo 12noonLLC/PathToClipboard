@@ -12,7 +12,7 @@ namespace PathToClipboard	// WHY: PathToClipboardExtension doesn't work
 	public class PathToClipboard : ShellExtension.ContextMenu
 	{
 		private const string _textMenuCommand = "Path to clipboard";
-		private const string _fmtMenuCommandDir = "{0}\tDirectory";
+		private readonly string _fmtMenuCommandDir = "{0}" + System.IO.Path.DirectorySeparatorChar + "\tDirectory";
 		private const string _fmtMenuCommandPath = "{0}\tPath";
 		private const string _fmtMenuCommandFile = "{0}\tFile";
 
@@ -51,7 +51,7 @@ namespace PathToClipboard	// WHY: PathToClipboardExtension doesn't work
 				}
 
 				// C:\bin\
-				string strDir = System.IO.Path.GetDirectoryName(filepaths[0]) + System.IO.Path.DirectorySeparatorChar;
+				string strDir = System.IO.Path.GetDirectoryName(filepaths[0]);
 				menuPopup.AppendMenuCommand(String.Format(_fmtMenuCommandDir, strDir), MyCommandHandler, strDir);
 				menuPopup.AppendMenuCommand(String.Format(_fmtMenuCommandPath, "All paths"), MyCommandHandler, strPaths);
 				menuPopup.AppendMenuCommand(String.Format(_fmtMenuCommandFile, "All names"), MyCommandHandler, strNames);
@@ -69,7 +69,7 @@ namespace PathToClipboard	// WHY: PathToClipboardExtension doesn't work
 				if (filepaths.Count == 1)
 				{
 					// C:\bin\
-					string strDir = System.IO.Path.GetDirectoryName(strFilepath) + System.IO.Path.DirectorySeparatorChar;
+					string strDir = System.IO.Path.GetDirectoryName(strFilepath);
 					menuPopup.AppendMenuCommand(String.Format(_fmtMenuCommandDir, strDir), MyCommandHandler, strDir);
 				}
 
@@ -77,11 +77,11 @@ namespace PathToClipboard	// WHY: PathToClipboardExtension doesn't work
 				string strName = System.IO.Path.GetFileName(strFilepath);
 				menuPopup.AppendMenuCommand(String.Format(_fmtMenuCommandFile, strName), MyCommandHandler, strName);
 
-//UNC paths
-//            // \\computer\c\bin\test.txt
-////string strUNC = "UNC format";
-//string strUNC = Win32Functions.Wrappers.WNet.WNetGetUniversalName(s);
-//            _idsFilepaths.Add(menuPopup.AppendMenuCommand(strUNC, MyCommandHandler), strUNC);
+				///*
+				// * UNC path: \\COMPUTER\Documents\test.txt
+				// */
+				//string strUNC = Win32Functions.Wrappers.WNet.WNetGetUniversalName(strFilepath);
+				//menuPopup.AppendMenuCommand(String.Format("UNC format", strUNC), MyCommandHandler, strUNC);
 			}
 
 			menuContext.InsertMenuPopup(menuPopup);
