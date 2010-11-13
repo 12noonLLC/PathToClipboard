@@ -378,27 +378,13 @@ namespace Win32Functions
 //						throw new ApplicationException("Cannot initialize FirstCommand again.");
 
 					_idFirstCommand = value;
-					_idNextCommand = _idFirstCommand;
+					NextCommandID = _idFirstCommand;
 					_commandhandlers.Clear();
 				}
 			}
 
-//TODO: Use implicit properties (del member var and use { get; private set; }
-			static private uint _idNextCommand = 0;
-			static public uint NextCommand
-			{
-				get { return _idNextCommand; }
-			}
-
-			//----------------------------------------------------------------
-
-//TODO: Use implicit properties (del member var and use { get; set; }
-			static private uint _ixMenuPosition = 0;
-			static public uint MenuPosition
-			{
-				get { return _ixMenuPosition; }
-				set { _ixMenuPosition = value; }
-			}
+			static public uint NextCommandID { get; private set; }
+			static public uint MenuPositionIx { get; set; }
 	
 			//----------------------------------------------------------------
 
@@ -410,6 +396,10 @@ namespace Win32Functions
 
 			//----------------------------------------------------------------
 
+			static Menu()
+			{
+				NextCommandID = 0;
+			}
 
 			public Menu(IntPtr hMenu)
 			{
@@ -437,12 +427,12 @@ namespace Win32Functions
 			{
 				System.Diagnostics.Debug.Assert(handler != null, "The passed handler cannot be null.");
 				System.Diagnostics.Debug.Assert(_idFirstCommand != 0, "FirstCommand must be initialized.");
-				System.Diagnostics.Debug.Assert(_idNextCommand != 0, "NextCommand must be initialized.");
+				System.Diagnostics.Debug.Assert(NextCommandID != 0, "NextCommand must be initialized.");
 
 				// add this command id and its handler
-				uint offsetCommand = _idNextCommand - _idFirstCommand;
+				uint offsetCommand = NextCommandID - _idFirstCommand;
 				_commandhandlers.Add(offsetCommand, new System.Collections.Generic.KeyValuePair<MenuDelegate, object>(handler, data));
-				++_idNextCommand;
+				++NextCommandID;
 
 				return offsetCommand;
 			}
@@ -486,14 +476,14 @@ namespace Win32Functions
 			{
 				bool brc = Win32Functions.Imports.AppendMenu((IntPtr)_hMenu, Win32Functions.MF_WIN40.SEPARATOR, IntPtr.Zero, string.Empty);
 				System.Diagnostics.Debug.Assert(brc, "AppendMenu (separator) failed.");
-				++_idNextCommand;
+				++NextCommandID;
 			}
 
 			public uint AppendMenuCommand<T>(string strText, MenuDelegate handler, T data)
 			{
 				System.Diagnostics.Debug.Assert(strText != string.Empty, "Text cannot be empty.");
 
-				bool brc = Win32Functions.Imports.AppendMenu((IntPtr)_hMenu, Win32Functions.MF_WIN40.STRING, (IntPtr)Menu.NextCommand, strText);
+				bool brc = Win32Functions.Imports.AppendMenu((IntPtr)_hMenu, Win32Functions.MF_WIN40.STRING, (IntPtr)Menu.NextCommandID, strText);
 				System.Diagnostics.Debug.Assert(brc, "AppendMenu failed.");
 
 				return AddMenuCommandHandler(handler, data);
@@ -505,25 +495,25 @@ namespace Win32Functions
 
 				bool brc = Win32Functions.Imports.AppendMenu(_hMenu, Win32Functions.MF_WIN40.POPUP, menuPopup, menuPopup.Text);
 				System.Diagnostics.Debug.Assert(brc, "AppendMenu failed.");
-				++_idNextCommand;		// this may not be necessary for popups, but I want to be safe
+				++NextCommandID;		// this may not be necessary for popups, but I want to be safe
 			}
 
 
 			public void InsertMenuSeparator()
 			{
-				bool brc = Win32Functions.Imports.InsertMenu((IntPtr)_hMenu, Menu.MenuPosition, Win32Functions.MF_WIN40.SEPARATOR, IntPtr.Zero, string.Empty);
+				bool brc = Win32Functions.Imports.InsertMenu((IntPtr)_hMenu, Menu.MenuPositionIx, Win32Functions.MF_WIN40.SEPARATOR, IntPtr.Zero, string.Empty);
 				System.Diagnostics.Debug.Assert(brc, "InsertMenu (separator) failed.");
-				++_idNextCommand;
-				++_ixMenuPosition;
+				++NextCommandID;
+				++MenuPositionIx;
 			}
 
 			public uint InsertMenuCommand<T>(string strText, MenuDelegate handler, T data)
 			{
 				System.Diagnostics.Debug.Assert(strText != string.Empty, "Text cannot be empty.");
 
-				bool brc = Win32Functions.Imports.InsertMenu((IntPtr)_hMenu, Menu.MenuPosition, Win32Functions.MF_WIN40.BYPOSITION | Win32Functions.MF_WIN40.STRING, (IntPtr)Menu.NextCommand, strText);
+				bool brc = Win32Functions.Imports.InsertMenu((IntPtr)_hMenu, Menu.MenuPositionIx, Win32Functions.MF_WIN40.BYPOSITION | Win32Functions.MF_WIN40.STRING, (IntPtr)Menu.NextCommandID, strText);
 				System.Diagnostics.Debug.Assert(brc, "InsertMenuCommand failed.");
-				++_ixMenuPosition;
+				++MenuPositionIx;
 
 				return AddMenuCommandHandler(handler, data);
 			}
@@ -532,10 +522,10 @@ namespace Win32Functions
 			{
 				System.Diagnostics.Debug.Assert(menuPopup != null, "The menu cannot be null.");
 
-				bool brc = Win32Functions.Imports.InsertMenu(_hMenu, Menu.MenuPosition, Win32Functions.MF_WIN40.BYPOSITION | Win32Functions.MF_WIN40.POPUP, menuPopup, menuPopup.Text);
+				bool brc = Win32Functions.Imports.InsertMenu(_hMenu, Menu.MenuPositionIx, Win32Functions.MF_WIN40.BYPOSITION | Win32Functions.MF_WIN40.POPUP, menuPopup, menuPopup.Text);
 				System.Diagnostics.Debug.Assert(brc);
-				++_idNextCommand;		// this may not be necessary for popups, but I want to be safe
-				++_ixMenuPosition;
+				++NextCommandID;		// this may not be necessary for popups, but I want to be safe
+				++MenuPositionIx;
 			}
 		}
 

@@ -9,6 +9,9 @@
  *
  * Associated with HKCR/ * shellex/ContextMenuHandlers/
  * 
+ * http://1code.codeplex.com
+ * http://1code.codeplex.com/SourceControl/changeset/view/55574#1315972
+ * 
  * Writing Windows Shell Extension with .NET Framework 4
  * http://blogs.msdn.com/b/codefx/archive/2010/09/14/writing-windows-shell-extension-with-net-framework-4-c-vb-net-part-1.aspx
  * http://blogs.msdn.com/b/codefx/archive/2010/10/10/writing-windows-shell-extension-with-net-framework-4-c-vb-net-part-2.aspx
@@ -40,12 +43,30 @@ namespace ShellExtension
 
 		#region IShellExtInit Members
 
+		/*
+		 * 1 Implementing IShellExtInit
+		 * 
+		 * After the context menu extension COM object is instantiated, the IShellExtInit.Initialize method is called.
+		 * IShellExtInit.Initialize supplies the context menu extension with an IDataObject object that holds one or
+		 * more file names in CF_HDROP format. You can enumerate the selected files and folders through the
+		 * IDataObject object. If a failure HRESULT is returned (thrown) from IShellExtInit.Initialize, the context
+		 * menu extension will not be used.
+		 * 
+		 * In the code sample, the FileContextMenuExt.Initialize method enumerates the selected files and folders.
+		 * If only one file is selected, the method stores the file name for later use. If more than one file or no file
+		 * are selected, the method throws an exception with the E_FAIL HRESULT to not use the context menu extension.
+		 * 
+		 * http://blogs.msdn.com/b/codefx/archive/2010/09/14/writing-windows-shell-extension-with-net-framework-4-c-vb-net-part-1.aspx
+		 */
 		void MyCOMDefinitions.IShellExtInit.Initialize(IntPtr pidlFolder, IntPtr lpdobj, IntPtr hKeyProgID)
 		{
 			_filepaths.Clear();
 
 			if (lpdobj == IntPtr.Zero)
-				return;	//			return 0;
+			{
+				Marshal.ThrowExceptionForHR(Win32Functions.WinError.E_FAIL);
+				return;
+			}
 
 			IntPtr hDrop = IntPtr.Zero;	// HDROP representing collection of selected files
 			System.Runtime.InteropServices.ComTypes.STGMEDIUM medium = new System.Runtime.InteropServices.ComTypes.STGMEDIUM();
@@ -70,12 +91,18 @@ namespace ShellExtension
 				dataObject.GetData(ref fmt, out medium);
 				hDrop = medium.unionmember;
 				if (hDrop == IntPtr.Zero)
+				{
+					Marshal.ThrowExceptionForHR(Win32Functions.WinError.E_FAIL);
 					return;
+				}
 
 				// how many files are selected? (Not necessarily any!)
 				uint nSelected = Win32Functions.Imports.DragQueryFile(hDrop, uint.MaxValue, null, 0);
 				if (nSelected == 0)
+				{
+					Marshal.ThrowExceptionForHR(Win32Functions.WinError.E_FAIL);
 					return;
+				}
 
 				// get each file path
 				StringBuilder sb = new StringBuilder(Win32Functions.Constants.MAX_FILE_LEN);
@@ -103,7 +130,7 @@ namespace ShellExtension
 		int MyCOMDefinitions.IContextMenu.QueryContextMenu(IntPtr hmenu, uint ixMenu, uint idCmdFirst, uint idCmdLast, uint uFlags)
 		{
 			Win32Functions.Wrappers.Menu.FirstCommand = idCmdFirst;	// This also clears the collection of command handlers
-			Win32Functions.Wrappers.Menu.MenuPosition = ixMenu;
+			Win32Functions.Wrappers.Menu.MenuPositionIx = ixMenu;
 
 			// if the user is activating the default command, do nothing
 			if ((uFlags & (uint)MyCOMDefinitions.CMF.CMF_DEFAULTONLY) != 0)
@@ -126,8 +153,8 @@ namespace ShellExtension
 				return Marshal.GetHRForLastWin32Error();
 			}
 
-			System.Diagnostics.Debug.Assert(Win32Functions.Wrappers.Menu.NextCommand - 1 <= idCmdLast, "Added more menu commands than permitted.");
-			return (int)Win32Functions.WinError.MAKE_HRESULT(Win32Functions.SEVERITY.SUCCESS, 0, Win32Functions.Wrappers.Menu.NextCommand - Win32Functions.Wrappers.Menu.FirstCommand);
+			System.Diagnostics.Debug.Assert(Win32Functions.Wrappers.Menu.NextCommandID - 1 <= idCmdLast, "Added more menu commands than permitted.");
+			return (int)Win32Functions.WinError.MAKE_HRESULT(Win32Functions.SEVERITY.SUCCESS, 0, Win32Functions.Wrappers.Menu.NextCommandID - Win32Functions.Wrappers.Menu.FirstCommand);
 		}
 
 		/// <summary>

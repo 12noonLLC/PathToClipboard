@@ -117,6 +117,17 @@ namespace MyCOMDefinitions
 	[Guid("000214e4-0000-0000-c000-000000000046")]
 	public interface IContextMenu
 	{
+		/*
+		 * The PreserveSig attribute indicates that the HRESULT or retval signature transformation that takes
+		 * place during COM interop calls should be suppressed. When you do not apply PreserveSigAttribute
+		 * (e.g. the GetCommandString method of IContextMenu), the failure HRESULT of the method needs to be
+		 * thrown as a .NET exception. For example, Marshal.ThrowExceptionForHR(WinError.E_FAIL); When you
+		 * apply the PreserveSigAttribute to a managed method signature, the managed and unmanaged signatures
+		 * of the attributed method are identical (e.g. the QueryContextMenu method of IContextMenu).
+		 * Preserving the original method signature is necessary if the member returns more than one success
+		 * HRESULT value and you want to detect the different values.
+		 * http://blogs.msdn.com/b/codefx/archive/2010/09/14/writing-windows-shell-extension-with-net-framework-4-c-vb-net-part-1.aspx
+		 */
 		[PreserveSig]
 		int QueryContextMenu(
 				IntPtr /*HMENU*/ hMenu,

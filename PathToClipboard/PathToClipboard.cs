@@ -11,13 +11,17 @@ namespace PathToClipboard	// WHY: PathToClipboardExtension doesn't work
 	[Guid("2E820618-9430-421b-8FA5-12BD9E31EEF3"), ComVisible(true)]
 	public class PathToClipboard : ShellExtension.ContextMenu
 	{
+		private const string _textMenuCommand = "Path to clipboard";
+		private const string _fmtMenuCommandDir = "{0}\tDirectory";
+		private const string _fmtMenuCommandPath = "{0}\tPath";
+		private const string _fmtMenuCommandFile = "{0}\tFile";
+
 		// We don't really use the verb. Presumably, it'd have to be set in the Registry so Windows could pass it to InvokeCommand().
 		private const string _verb = "p2c";
 		private const string _verbCanonicalName = "PathToClipboard";
 		private const string _verbHelpText = "Copy this text to the clipboard";
 
 
-//TODO: Use String.Format() and create constants
 		/// <summary>
 		/// Add commands to the context menu.
 		/// </summary>
@@ -29,7 +33,7 @@ namespace PathToClipboard	// WHY: PathToClipboardExtension doesn't work
 			if (filepaths.Count == 0)
 				return false;
 
-			Win32Functions.Wrappers.MenuPopup menuPopup = new Win32Functions.Wrappers.MenuPopup("Path to clipboard");
+			Win32Functions.Wrappers.MenuPopup menuPopup = new Win32Functions.Wrappers.MenuPopup(_textMenuCommand);
 
 			/*
 			 * If there more than one file is selected, add an "ALL PATHS" option.
@@ -37,8 +41,8 @@ namespace PathToClipboard	// WHY: PathToClipboardExtension doesn't work
 			if (filepaths.Count > 1)
 			{
 				// for each selected file, add all forms of its path to the menu, separated by--what else--separators
-				string strPaths = string.Empty;
-				string strNames = string.Empty;
+				string strPaths = String.Empty;
+				string strNames = String.Empty;
 				foreach (string strFilepath in filepaths)
 				{
 					strPaths += strFilepath + System.Environment.NewLine;
@@ -48,9 +52,9 @@ namespace PathToClipboard	// WHY: PathToClipboardExtension doesn't work
 
 				// C:\bin\
 				string strDir = System.IO.Path.GetDirectoryName(filepaths[0]) + System.IO.Path.DirectorySeparatorChar;
-				menuPopup.AppendMenuCommand(strDir + "\tDirectory", MyCommandHandler, strDir);
-				menuPopup.AppendMenuCommand("All paths\tPath", MyCommandHandler, strPaths);
-				menuPopup.AppendMenuCommand("All names\tFile", MyCommandHandler, strNames);
+				menuPopup.AppendMenuCommand(String.Format(_fmtMenuCommandDir, strDir), MyCommandHandler, strDir);
+				menuPopup.AppendMenuCommand(String.Format(_fmtMenuCommandPath, "All paths"), MyCommandHandler, strPaths);
+				menuPopup.AppendMenuCommand(String.Format(_fmtMenuCommandFile, "All names"), MyCommandHandler, strNames);
 				menuPopup.AppendMenuSeparator();
 			}
 
@@ -60,18 +64,18 @@ namespace PathToClipboard	// WHY: PathToClipboardExtension doesn't work
 					menuPopup.AppendMenuSeparator();
 
 				// C:\bin\test.txt
-				menuPopup.AppendMenuCommand(strFilepath + "\tPath", MyCommandHandler, strFilepath);
+				menuPopup.AppendMenuCommand(String.Format(_fmtMenuCommandPath, strFilepath), MyCommandHandler, strFilepath);
 
 				if (filepaths.Count == 1)
 				{
 					// C:\bin\
 					string strDir = System.IO.Path.GetDirectoryName(strFilepath) + System.IO.Path.DirectorySeparatorChar;
-					menuPopup.AppendMenuCommand(strDir + "\tDirectory", MyCommandHandler, strDir);
+					menuPopup.AppendMenuCommand(String.Format(_fmtMenuCommandDir, strDir), MyCommandHandler, strDir);
 				}
 
 				// test.txt
 				string strName = System.IO.Path.GetFileName(strFilepath);
-				menuPopup.AppendMenuCommand(strName + "\tFile", MyCommandHandler, strName);
+				menuPopup.AppendMenuCommand(String.Format(_fmtMenuCommandFile, strName), MyCommandHandler, strName);
 
 //UNC paths
 //            // \\computer\c\bin\test.txt
@@ -85,13 +89,6 @@ namespace PathToClipboard	// WHY: PathToClipboardExtension doesn't work
 			/*
 			 * Note: This is called when selecting a jump list's command.
 			 */
-//string all = String.Empty;
-//foreach (string s in filepaths)
-//{
-//   all += s;
-//   all += " ";
-//}
-//System.Windows.Forms.MessageBox.Show(all);
 			return true;
 		}
 
