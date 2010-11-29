@@ -229,20 +229,6 @@
                     "Transitive" = "11:FALSE"
                         "Keys"
                         {
-                            "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_16BF6794AC444402981B8D16EF8832DF"
-                            {
-                            "Name" = "8:[Manufacturer]"
-                            "Condition" = "8:"
-                            "AlwaysCreate" = "11:FALSE"
-                            "DeleteAtUninstall" = "11:FALSE"
-                            "Transitive" = "11:FALSE"
-                                "Keys"
-                                {
-                                }
-                                "Values"
-                                {
-                                }
-                            }
                         }
                         "Values"
                         {
@@ -263,20 +249,6 @@
                     "Transitive" = "11:FALSE"
                         "Keys"
                         {
-                            "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_726B39CAB9534A2BA1CBB9635D22E5BE"
-                            {
-                            "Name" = "8:[Manufacturer]"
-                            "Condition" = "8:"
-                            "AlwaysCreate" = "11:FALSE"
-                            "DeleteAtUninstall" = "11:FALSE"
-                            "Transitive" = "11:FALSE"
-                                "Keys"
-                                {
-                                }
-                                "Values"
-                                {
-                                }
-                            }
                         }
                         "Values"
                         {
@@ -317,7 +289,7 @@
                                         {
                                             "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_D0EC366AA4E94F4E9D6F8ED41C36F24E"
                                             {
-                                            "Name" = "8:12noon PathToClipboard {2e820618-9430-421b-8fa5-12bd9e31eef3}"
+                                            "Name" = "8:{2e820618-9430-421b-8fa5-12bd9e31eef3}"
                                             "Condition" = "8:"
                                             "AlwaysCreate" = "11:FALSE"
                                             "DeleteAtUninstall" = "11:TRUE"
@@ -327,13 +299,13 @@
                                                 }
                                                 "Values"
                                                 {
-                                                    "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_C02CFE91A114442DB66D4E273CCE3E05"
+                                                    "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_485B9039C3E248FCB48068BBA573027B"
                                                     {
                                                     "Name" = "8:"
                                                     "Condition" = "8:"
                                                     "Transitive" = "11:FALSE"
                                                     "ValueTypes" = "3:1"
-                                                    "Value" = "8:{2e820618-9430-421b-8fa5-12bd9e31eef3}"
+                                                    "Value" = "8:"
                                                     }
                                                 }
                                             }
@@ -773,7 +745,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_9CA6FBF456A346E3B28C83E70D8918BD"
             {
-            "SourcePath" = "8:..\\obj\\Release\\PathToClipboard.dll"
+            "SourcePath" = "8:"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_38FCB6ED95F64F4898401C2698A63A6D"
