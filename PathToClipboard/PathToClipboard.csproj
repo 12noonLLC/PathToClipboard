@@ -128,8 +128,10 @@
   -->
   <PropertyGroup>
     <PostBuildEvent>REM Don't do these with a 64-bit DLL.
+REM Need to do the /codebase command to register it.
 REM C:\Windows\Microsoft.NET\Framework\v4.0.30319\RegAsm.exe "$(TargetPath)" /v /unregister
 REM C:\Windows\Microsoft.NET\Framework\v4.0.30319\RegAsm.exe "$(TargetPath)" /v /codebase
-REM "C:\Program Files\Microsoft SDKs\Windows\v6.0A\bin\gacutil.exe" /if "$(TargetPath)"</PostBuildEvent>
+
+REM Where's gacutil now? "C:\Program Files\Microsoft SDKs\Windows\v7.1\Bin\gacutil.exe" /if "$(TargetPath)"</PostBuildEvent>
   </PropertyGroup>
 </Project>

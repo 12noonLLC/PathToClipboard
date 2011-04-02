@@ -181,15 +181,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:PathToClipboard"
-        "ProductCode" = "8:{C482276E-37B5-4785-8481-10FB784EFB27}"
-        "PackageCode" = "8:{CC8CC14F-91AB-45D0-9E5C-914333DFAE73}"
+        "ProductCode" = "8:{1194A289-7EB8-4DD7-A318-E14A58B2B078}"
+        "PackageCode" = "8:{F60309BD-9A49-4E88-B8A4-5FBEA58C83E8}"
         "UpgradeCode" = "8:{164C2A6B-CFC2-4E6E-B0E4-46F83DB712A1}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:TRUE"
-        "ProductVersion" = "8:1.3.115"
+        "ProductVersion" = "8:1.3.116"
         "Manufacturer" = "8:12noon"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:http://12noon.com"
@@ -739,7 +739,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_0C83D60DCA854EFEA35E2566CF5FBFC7"
             {
-            "SourcePath" = "8:..\\obj\\x64\\Release\\PathToClipboard.dll"
+            "SourcePath" = "8:"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_97450BB31A3E461CB649FD9E1E199D00"

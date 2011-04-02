@@ -40,7 +40,7 @@ namespace MyCOMDefinitions
 	internal struct CMINVOKECOMMANDINFO
 	{
 		//NOTE: When SEE_MASK_HMONITOR is set, hIcon is treated as hMonitor
-		public UInt32 cbSize;						// sizeof(CMINVOKECOMMANDINFO)
+		public uint cbSize;						// sizeof(CMINVOKECOMMANDINFO)
 		public CMIC fMask;						// any combination of CMIC_MASK_*
 		public IntPtr hwnd;						// might be NULL (indicating no owner window)
 		public IntPtr lpVerb;

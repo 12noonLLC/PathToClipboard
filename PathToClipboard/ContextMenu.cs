@@ -245,8 +245,15 @@ namespace ShellExtension
 			{
 				if ((ici.fMask & MyCOMDefinitions.CMIC.CMIC_MASK_UNICODE) != 0)
 				{
-					isUnicode = true;
-					iciex = (MyCOMDefinitions.CMINVOKECOMMANDINFOEX)Marshal.PtrToStructure(pici, typeof(MyCOMDefinitions.CMINVOKECOMMANDINFOEX));
+					/*
+					 * REF: All-In-One Code Framework\Visual Studio 2010\CSShellExtContextMenuHandler\
+					 * 
+					 * This code seems correct, comparing with the above Microsoft sample.
+					 * However, this marshaling throws an exception.
+					 * We don't use the lpVerb[W], so we can ignore it, but it's troubling.
+					 */
+					//isUnicode = true;
+					//iciex = (MyCOMDefinitions.CMINVOKECOMMANDINFOEX)Marshal.PtrToStructure(pici, typeof(MyCOMDefinitions.CMINVOKECOMMANDINFOEX));
 				}
 			}
 
@@ -308,10 +315,10 @@ namespace ShellExtension
 				System.Diagnostics.Debug.Assert(Win32Functions.Macros.HighWord(iciex.lpVerbW.ToInt32()) == 0);
 
 			   /*
-			      * First command: verb == 0
-			      * Second command: verb == 1
-			      * etc.
-			      */
+			    * First command: verb == 0
+			    * Second command: verb == 1
+			    * etc.
+			    */
 			   int offsetCommand = Win32Functions.Macros.LowWord(ici.lpVerb.ToInt32());
 				if (Win32Functions.Wrappers.Menu.CallCommandHandler((uint)offsetCommand))
 				{

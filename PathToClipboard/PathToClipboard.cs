@@ -31,7 +31,9 @@ namespace PathToClipboard	// WHY: PathToClipboardExtension doesn't work
 		override protected bool AddMenuCommands(Win32Functions.Wrappers.Menu menuContext, System.Collections.Specialized.StringCollection filepaths)
 		{
 			if (filepaths.Count == 0)
+			{
 				return false;
+			}
 
 			Win32Functions.Wrappers.MenuPopup menuPopup = new Win32Functions.Wrappers.MenuPopup(_textMenuCommand);
 
@@ -41,20 +43,21 @@ namespace PathToClipboard	// WHY: PathToClipboardExtension doesn't work
 			if (filepaths.Count > 1)
 			{
 				// for each selected file, add all forms of its path to the menu, separated by--what else--separators
-				string strPaths = String.Empty;
-				string strNames = String.Empty;
+				StringBuilder strPaths = new StringBuilder();
+				StringBuilder strNames = new StringBuilder();
 				foreach (string strFilepath in filepaths)
 				{
-					strPaths += strFilepath + System.Environment.NewLine;
+					strPaths.AppendLine(strFilepath);
 					string strName = System.IO.Path.GetFileName(strFilepath);
-					strNames += strName + System.Environment.NewLine;
+					strNames.AppendLine(strName);
 				}
 
 				// C:\bin\
 				string strDir = System.IO.Path.GetDirectoryName(filepaths[0]);
 				menuPopup.AppendMenuCommand(String.Format(_fmtMenuCommandDir, strDir), MyCommandHandler, strDir);
-				menuPopup.AppendMenuCommand(String.Format(_fmtMenuCommandPath, "All paths"), MyCommandHandler, strPaths);
-				menuPopup.AppendMenuCommand(String.Format(_fmtMenuCommandFile, "All names"), MyCommandHandler, strNames);
+				menuPopup.AppendMenuCommand(String.Format(_fmtMenuCommandPath, "All paths"), MyCommandHandler, strPaths.ToString());
+				//BMK TODO: "All names" command seems to crash Windows Explorer
+				menuPopup.AppendMenuCommand(String.Format(_fmtMenuCommandFile, "All names"), MyCommandHandler, strNames.ToString());
 				menuPopup.AppendMenuSeparator();
 			}
 
