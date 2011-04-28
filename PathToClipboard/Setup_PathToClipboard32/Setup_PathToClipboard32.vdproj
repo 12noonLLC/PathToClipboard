@@ -188,7 +188,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:PathToClipboard"
         "ProductCode" = "8:{08FD6E18-F423-45C0-B487-950780AF8B89}"
-        "PackageCode" = "8:{A74BE201-EC3A-4D2E-847C-5B8EF82B8581}"
+        "PackageCode" = "8:{24124C86-39C3-4E93-9CD8-9FD1C4C3A94C}"
         "UpgradeCode" = "8:{CD10448D-7925-4F4E-AD20-3D1C23042273}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
@@ -745,7 +745,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_9CA6FBF456A346E3B28C83E70D8918BD"
             {
-            "SourcePath" = "8:"
+            "SourcePath" = "8:..\\obj\\Release\\PathToClipboard.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_38FCB6ED95F64F4898401C2698A63A6D"
