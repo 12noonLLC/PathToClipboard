@@ -155,7 +155,7 @@
             }
             "{3C67513D-01DD-4637-8A68-80971EB9504F}:_97450BB31A3E461CB649FD9E1E199D00"
             {
-            "DefaultLocation" = "8:[ProgramFiles64Folder][Manufacturer] [ProductName]"
+            "DefaultLocation" = "8:[ProgramFiles64Folder][ProductName]"
             "Name" = "8:#1925"
             "AlwaysCreate" = "11:FALSE"
             "Condition" = "8:"
@@ -180,9 +180,9 @@
         "Product"
         {
         "Name" = "8:Microsoft Visual Studio"
-        "ProductName" = "8:PathToClipboard"
+        "ProductName" = "8:12noon PathToClipboard"
         "ProductCode" = "8:{1194A289-7EB8-4DD7-A318-E14A58B2B078}"
-        "PackageCode" = "8:{1C36D897-6E22-4C1F-BB4D-C0067E4F65A6}"
+        "PackageCode" = "8:{E04D1C31-E76F-4442-A691-DD916D5B7EC2}"
         "UpgradeCode" = "8:{164C2A6B-CFC2-4E6E-B0E4-46F83DB712A1}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
@@ -285,7 +285,7 @@
                                             {
                                             "Name" = "8:{2e820618-9430-421b-8fa5-12bd9e31eef3}"
                                             "Condition" = "8:"
-                                            "AlwaysCreate" = "11:FALSE"
+                                            "AlwaysCreate" = "11:TRUE"
                                             "DeleteAtUninstall" = "11:TRUE"
                                             "Transitive" = "11:FALSE"
                                                 "Keys"
@@ -299,7 +299,7 @@
                                                     "Condition" = "8:"
                                                     "Transitive" = "11:FALSE"
                                                     "ValueTypes" = "3:1"
-                                                    "Value" = "8:"
+                                                    "Value" = "8:PathToClipboard"
                                                     }
                                                 }
                                             }
@@ -316,6 +316,184 @@
                         }
                         "Values"
                         {
+                        }
+                    }
+                    "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_165D888AF10D4F8E8815F1914DD265AC"
+                    {
+                    "Name" = "8:PathToClipboard.PathToClipboard"
+                    "Condition" = "8:"
+                    "AlwaysCreate" = "11:TRUE"
+                    "DeleteAtUninstall" = "11:TRUE"
+                    "Transitive" = "11:FALSE"
+                        "Keys"
+                        {
+                            "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_422FDA3EA189415EBB931121D03231B3"
+                            {
+                            "Name" = "8:CLSID"
+                            "Condition" = "8:"
+                            "AlwaysCreate" = "11:FALSE"
+                            "DeleteAtUninstall" = "11:FALSE"
+                            "Transitive" = "11:FALSE"
+                                "Keys"
+                                {
+                                }
+                                "Values"
+                                {
+                                    "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_E9183E1EA3F241B29BEE0C9052242170"
+                                    {
+                                    "Name" = "8:"
+                                    "Condition" = "8:"
+                                    "Transitive" = "11:FALSE"
+                                    "ValueTypes" = "3:1"
+                                    "Value" = "8:{2E820618-9430-421B-8FA5-12BD9E31EEF3}"
+                                    }
+                                }
+                            }
+                        }
+                        "Values"
+                        {
+                            "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_C0AF5A1290554C0C989C91ED88188B48"
+                            {
+                            "Name" = "8:"
+                            "Condition" = "8:"
+                            "Transitive" = "11:FALSE"
+                            "ValueTypes" = "3:1"
+                            "Value" = "8:PathToClipboard.PathToClipboard"
+                            }
+                        }
+                    }
+                    "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_4073A07F60204F539DFBC1E7B56A626F"
+                    {
+                    "Name" = "8:{2E820618-9430-421B-8FA5-12BD9E31EEF3}"
+                    "Condition" = "8:"
+                    "AlwaysCreate" = "11:TRUE"
+                    "DeleteAtUninstall" = "11:TRUE"
+                    "Transitive" = "11:FALSE"
+                        "Keys"
+                        {
+                            "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_5483DFC1B51548F1A4FC651E0957A9CC"
+                            {
+                            "Name" = "8:Implemented Categories"
+                            "Condition" = "8:"
+                            "AlwaysCreate" = "11:FALSE"
+                            "DeleteAtUninstall" = "11:FALSE"
+                            "Transitive" = "11:FALSE"
+                                "Keys"
+                                {
+                                    "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_465DC86D013040FA878EFFA40B4BC777"
+                                    {
+                                    "Name" = "8:{62C8FE65-4EBB-45E7-B440-6E39B2CDBF29}"
+                                    "Condition" = "8:"
+                                    "AlwaysCreate" = "11:FALSE"
+                                    "DeleteAtUninstall" = "11:FALSE"
+                                    "Transitive" = "11:FALSE"
+                                        "Keys"
+                                        {
+                                        }
+                                        "Values"
+                                        {
+                                        }
+                                    }
+                                }
+                                "Values"
+                                {
+                                }
+                            }
+                            "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_A87F0B3F702C48F2878F865B53A41494"
+                            {
+                            "Name" = "8:InprocServer32"
+                            "Condition" = "8:"
+                            "AlwaysCreate" = "11:FALSE"
+                            "DeleteAtUninstall" = "11:FALSE"
+                            "Transitive" = "11:FALSE"
+                                "Keys"
+                                {
+                                }
+                                "Values"
+                                {
+                                    "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_01300D514E6B4369B2D9FD8419B7AD17"
+                                    {
+                                    "Name" = "8:Class"
+                                    "Condition" = "8:"
+                                    "Transitive" = "11:FALSE"
+                                    "ValueTypes" = "3:1"
+                                    "Value" = "8:PathToClipboard.PathToClipboard"
+                                    }
+                                    "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_237E02C805DB475CB2F99CA8107611C9"
+                                    {
+                                    "Name" = "8:Assembly"
+                                    "Condition" = "8:"
+                                    "Transitive" = "11:FALSE"
+                                    "ValueTypes" = "3:1"
+                                    "Value" = "8:PathToClipboard, Version=#.#.##.0, Culture=neutral, PublicKeyToken=83f37c29ac74c202"
+                                    }
+                                    "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_6DC1AA74A808403FBA846F5CEED4421B"
+                                    {
+                                    "Name" = "8:"
+                                    "Condition" = "8:"
+                                    "Transitive" = "11:FALSE"
+                                    "ValueTypes" = "3:1"
+                                    "Value" = "8:mscoree.dll"
+                                    }
+                                    "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_8396FBE51FEC42A2B604786FD522352E"
+                                    {
+                                    "Name" = "8:ThreadingModel"
+                                    "Condition" = "8:"
+                                    "Transitive" = "11:FALSE"
+                                    "ValueTypes" = "3:1"
+                                    "Value" = "8:Both"
+                                    }
+                                    "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_84875A5C564D43A7B3DA1DA5290E37F1"
+                                    {
+                                    "Name" = "8:CodeBase"
+                                    "Condition" = "8:"
+                                    "Transitive" = "11:FALSE"
+                                    "ValueTypes" = "3:1"
+                                    "Value" = "8:** path to PathToClipboard.dll **"
+                                    }
+                                    "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_DDF0CB1BB23248C3B1BF7DDE2C453F57"
+                                    {
+                                    "Name" = "8:RuntimeVersion"
+                                    "Condition" = "8:"
+                                    "Transitive" = "11:FALSE"
+                                    "ValueTypes" = "3:1"
+                                    "Value" = "8:v4.0.30319"
+                                    }
+                                }
+                            }
+                            "{60EA8692-D2D5-43EB-80DC-7906BF13D6EF}:_E46C5B6CC6E24A468E80C3489B866326"
+                            {
+                            "Name" = "8:ProgId"
+                            "Condition" = "8:"
+                            "AlwaysCreate" = "11:FALSE"
+                            "DeleteAtUninstall" = "11:FALSE"
+                            "Transitive" = "11:FALSE"
+                                "Keys"
+                                {
+                                }
+                                "Values"
+                                {
+                                    "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_4C402C168F864E9F8AF4C251FD38A0A3"
+                                    {
+                                    "Name" = "8:"
+                                    "Condition" = "8:"
+                                    "Transitive" = "11:FALSE"
+                                    "ValueTypes" = "3:1"
+                                    "Value" = "8:PathToClipboard.PathToClipboard"
+                                    }
+                                }
+                            }
+                        }
+                        "Values"
+                        {
+                            "{ADCFDA98-8FDD-45E4-90BC-E3D20B029870}:_7178E2DC33D2459C97E15F8F34EF9472"
+                            {
+                            "Name" = "8:"
+                            "Condition" = "8:"
+                            "Transitive" = "11:FALSE"
+                            "ValueTypes" = "3:1"
+                            "Value" = "8:PathToClipboard.PathToClipboard"
+                            }
                         }
                     }
                 }

@@ -435,6 +435,12 @@ namespace ShellExtension
 					key.SetValue("", t.Name);
 					key.Close();
 
+					key = Microsoft.Win32.Registry.ClassesRoot.CreateSubKey(String.Format(@"CLSID\{0}", t.Name));
+					key.Close();
+					key = Microsoft.Win32.Registry.ClassesRoot.CreateSubKey(String.Format(@"CLSID\{0}\InprocServer32", strGuid));
+					key.SetValue("", String.Format("PathToClipboard, Version=1.3.119.0, Culture=neutral, PublicKeyToken=83f37c29ac74c202"));
+					key.Close();
+
 					/*
 					 * http://msdn.microsoft.com/en-us/library/bb762118.aspx
 					 * SHChangeNotify(SHCNE_ASSOCCHANGED, SHCNF_IDLIST, NULL, NULL)

@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("PathToClipboard")]
+[assembly: AssemblyTitle("12noon PathToClipboard")]
 [assembly: AssemblyDescription("Copy selected file paths to clipboard")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("12noon")]
 [assembly: AssemblyProduct("PathToClipboard")]
-[assembly: AssemblyCopyright("© 2007-2011 12noon")]
+[assembly: AssemblyCopyright("© 2007-2012 12noon")]
 [assembly: AssemblyTrademark("PathToClipboard, 12noon")]
 [assembly: AssemblyCulture("")]
 

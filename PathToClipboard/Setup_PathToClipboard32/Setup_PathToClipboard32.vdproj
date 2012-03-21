@@ -161,7 +161,7 @@
             }
             "{3C67513D-01DD-4637-8A68-80971EB9504F}:_457965579E8E47EB8F6B7722A3287B03"
             {
-            "DefaultLocation" = "8:[ProgramFilesFolder][Manufacturer] [ProductName]"
+            "DefaultLocation" = "8:[ProgramFilesFolder][ProductName]"
             "Name" = "8:#1925"
             "AlwaysCreate" = "11:FALSE"
             "Condition" = "8:"
@@ -186,9 +186,9 @@
         "Product"
         {
         "Name" = "8:Microsoft Visual Studio"
-        "ProductName" = "8:PathToClipboard"
+        "ProductName" = "8:12noon PathToClipboard"
         "ProductCode" = "8:{08FD6E18-F423-45C0-B487-950780AF8B89}"
-        "PackageCode" = "8:{5F786AAD-F107-45B9-91C3-3016F995419C}"
+        "PackageCode" = "8:{23B0D7E1-72E7-4CCE-B15D-2D41AC27519B}"
         "UpgradeCode" = "8:{CD10448D-7925-4F4E-AD20-3D1C23042273}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
