@@ -139,6 +139,7 @@ namespace PathToClipboard	// WHY: PathToClipboardExtension doesn't work
 		 */
 		static private string[] _filetypes = new string[] { "AllFilesystemObjects" };
 
+		// REF: http://www.codeproject.com/Articles/1490/Creating-a-shell-extension-with-C
 		[ComRegisterFunction()]
 		static public void RegisterServer(Type t)
 		{
