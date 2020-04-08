@@ -36,9 +36,9 @@ namespace ShellExtension
 {
 	public abstract class ContextMenu : MyCOMDefinitions.IShellExtInit, MyCOMDefinitions.IContextMenu
 	{
-		private uint IDM_DISPLAY = 0;
+		private readonly uint IDM_DISPLAY = 0;
 
-		private System.Collections.Specialized.StringCollection _filepaths = new System.Collections.Specialized.StringCollection();
+		private readonly System.Collections.Specialized.StringCollection _filepaths = new System.Collections.Specialized.StringCollection();
 
 
 		#region IShellExtInit Members
@@ -68,7 +68,6 @@ namespace ShellExtension
 				return;
 			}
 
-			IntPtr hDrop = IntPtr.Zero;	// HDROP representing collection of selected files
 			System.Runtime.InteropServices.ComTypes.STGMEDIUM medium = new System.Runtime.InteropServices.ComTypes.STGMEDIUM();
 			try
 			{
@@ -80,16 +79,19 @@ namespace ShellExtension
 									System.Collections.Specialized.StringCollection files = dataobject.GetFileDropList();
 								}
 				*/
-				System.Runtime.InteropServices.ComTypes.FORMATETC fmt = new System.Runtime.InteropServices.ComTypes.FORMATETC();
-				fmt.cfFormat = (short)Win32Functions.CLIPFORMAT.CF_HDROP;
-				fmt.ptd = IntPtr.Zero;
-				fmt.dwAspect = System.Runtime.InteropServices.ComTypes.DVASPECT.DVASPECT_CONTENT;
-				fmt.lindex = -1;
-				fmt.tymed = System.Runtime.InteropServices.ComTypes.TYMED.TYMED_HGLOBAL;
+				var fmt = new System.Runtime.InteropServices.ComTypes.FORMATETC
+				{
+					cfFormat = (short)Win32Functions.CLIPFORMAT.CF_HDROP,
+					ptd = IntPtr.Zero,
+					dwAspect = System.Runtime.InteropServices.ComTypes.DVASPECT.DVASPECT_CONTENT,
+					lindex = -1,
+					tymed = System.Runtime.InteropServices.ComTypes.TYMED.TYMED_HGLOBAL
+				};
 
-				System.Runtime.InteropServices.ComTypes.IDataObject dataObject = (System.Runtime.InteropServices.ComTypes.IDataObject)Marshal.GetObjectForIUnknown(lpdobj);
+				var dataObject = (System.Runtime.InteropServices.ComTypes.IDataObject)Marshal.GetObjectForIUnknown(lpdobj);
 				dataObject.GetData(ref fmt, out medium);
-				hDrop = medium.unionmember;
+				// HDROP representing collection of selected files
+				IntPtr hDrop = medium.unionmember;
 				if (hDrop == IntPtr.Zero)
 				{
 					Marshal.ThrowExceptionForHR(Win32Functions.WinError.E_FAIL);
@@ -143,7 +145,7 @@ namespace ShellExtension
 			}
 
 			// start menu command ids here
-			uint idCmdNext = idCmdFirst;
+			//uint idCmdNext = idCmdFirst;
 
 			Win32Functions.Wrappers.Menu menuContext = new Win32Functions.Wrappers.Menu(hmenu);
 			if (!AddMenuCommands(menuContext, _filepaths))
