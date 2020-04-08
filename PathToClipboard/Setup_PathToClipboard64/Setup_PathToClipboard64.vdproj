@@ -19,6 +19,18 @@
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_0C83D60DCA854EFEA35E2566CF5FBFC7"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_A49E30FE669542889AD3DEDD815DA6D8"
+        "MsmSig" = "8:_UNDEFINED"
+        }
     }
     "Configurations"
     {
@@ -83,15 +95,10 @@
             "ComponentsUrl" = "8:"
                 "Items"
                 {
-                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.0,Profile=Client"
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.7.2"
                     {
-                    "Name" = "8:Microsoft .NET Framework 4 Client Profile (x86 and x64)"
-                    "ProductCode" = "8:.NETFramework,Version=v4.0,Profile=Client"
-                    }
-                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:Microsoft.Windows.Installer.3.1"
-                    {
-                    "Name" = "8:Windows Installer 3.1"
-                    "ProductCode" = "8:Microsoft.Windows.Installer.3.1"
+                    "Name" = "8:Microsoft .NET Framework 4.7.2 (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.7.2"
                     }
                 }
             }
@@ -116,7 +123,7 @@
                 {
                 "Name" = "8:.NET Framework"
                 "Message" = "8:[VSDNETMSG]"
-                "FrameworkVersion" = "8:.NETFramework,Version=v4.0,Profile=Client"
+                "FrameworkVersion" = "8:.NETFramework,Version=v4.7.2"
                 "AllowLaterVersions" = "11:FALSE"
                 "InstallUrl" = "8:http://go.microsoft.com/fwlink/?LinkId=131000"
                 }
@@ -170,7 +177,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:12noon PathToClipboard"
         "ProductCode" = "8:{128BDAA2-9596-4653-A7BF-A3B74F47B30D}"
-        "PackageCode" = "8:{6FC4D290-C612-42EB-B64C-733468E6968B}"
+        "PackageCode" = "8:{4C38BF82-6E50-4315-8AE6-E89BFC4EC13B}"
         "UpgradeCode" = "8:{164C2A6B-CFC2-4E6E-B0E4-46F83DB712A1}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
@@ -905,7 +912,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_0C83D60DCA854EFEA35E2566CF5FBFC7"
             {
-            "SourcePath" = "8:..\\obj\\x64\\Release\\PathToClipboard.dll"
+            "SourcePath" = "8:..\\obj\\Release\\PathToClipboard.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_97450BB31A3E461CB649FD9E1E199D00"
@@ -933,7 +940,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_A49E30FE669542889AD3DEDD815DA6D8"
             {
-            "SourcePath" = "8:..\\obj\\x64\\Release\\PathToClipboard.dll"
+            "SourcePath" = "8:..\\obj\\Release\\PathToClipboard.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_0F0021D8BBB240778F48AC6E05F4B06C"

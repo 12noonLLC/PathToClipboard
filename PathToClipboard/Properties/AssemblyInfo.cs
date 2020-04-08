@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("12noon")]
 [assembly: AssemblyProduct("PathToClipboard")]
-[assembly: AssemblyCopyright("© 2007-2012 12noon")]
+[assembly: AssemblyCopyright("\u00A9 2007-2020 12noon")]
 [assembly: AssemblyTrademark("PathToClipboard, 12noon")]
 [assembly: AssemblyCulture("")]
 
@@ -31,5 +31,5 @@ using System.Runtime.InteropServices;
 //
 // You can specify all the values or you can default the Revision and Build Numbers 
 // by using the '*' as shown below:
-[assembly: AssemblyVersion("1.1.61.0")]
-[assembly: AssemblyFileVersion("1.5.123.0")]
+[assembly: AssemblyVersion("1.6.123.0")]
+[assembly: AssemblyFileVersion("1.6.123.0")]

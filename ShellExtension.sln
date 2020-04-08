@@ -1,6 +1,8 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30002.166
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PathToClipboard", "PathToClipboard\PathToClipboard.csproj", "{A76C8569-6D8B-499E-BBBA-1482A51CD367}"
 EndProject
 Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Setup_PathToClipboard", "PathToClipboard\Setup_PathToClipboard32\Setup_PathToClipboard32.vdproj", "{CBD93C8F-580F-4117-BD2E-6DEEBA63332E}"
@@ -38,7 +40,8 @@ Global
 		{A76C8569-6D8B-499E-BBBA-1482A51CD367}.Release|Win32.Build.0 = Release|Any CPU
 		{A76C8569-6D8B-499E-BBBA-1482A51CD367}.Release|x64.ActiveCfg = Release|x64
 		{A76C8569-6D8B-499E-BBBA-1482A51CD367}.Release|x64.Build.0 = Release|x64
-		{A76C8569-6D8B-499E-BBBA-1482A51CD367}.Release|x86.ActiveCfg = Release|Any CPU
+		{A76C8569-6D8B-499E-BBBA-1482A51CD367}.Release|x86.ActiveCfg = Release|x86
+		{A76C8569-6D8B-499E-BBBA-1482A51CD367}.Release|x86.Build.0 = Release|x86
 		{CBD93C8F-580F-4117-BD2E-6DEEBA63332E}.Debug|Any CPU.ActiveCfg = Debug
 		{CBD93C8F-580F-4117-BD2E-6DEEBA63332E}.Debug|Mixed Platforms.ActiveCfg = Debug
 		{CBD93C8F-580F-4117-BD2E-6DEEBA63332E}.Debug|Win32.ActiveCfg = Debug
@@ -53,6 +56,7 @@ Global
 		{CBD93C8F-580F-4117-BD2E-6DEEBA63332E}.Release|Win32.Build.0 = Release
 		{CBD93C8F-580F-4117-BD2E-6DEEBA63332E}.Release|x64.ActiveCfg = Release
 		{CBD93C8F-580F-4117-BD2E-6DEEBA63332E}.Release|x86.ActiveCfg = Release
+		{CBD93C8F-580F-4117-BD2E-6DEEBA63332E}.Release|x86.Build.0 = Release
 		{8F56633B-043B-4C7F-8B5B-B9BFB388FCDE}.Debug|Any CPU.ActiveCfg = Debug
 		{8F56633B-043B-4C7F-8B5B-B9BFB388FCDE}.Debug|Mixed Platforms.ActiveCfg = Debug
 		{8F56633B-043B-4C7F-8B5B-B9BFB388FCDE}.Debug|Win32.ActiveCfg = Debug
@@ -61,6 +65,7 @@ Global
 		{8F56633B-043B-4C7F-8B5B-B9BFB388FCDE}.Release|Any CPU.ActiveCfg = Release
 		{8F56633B-043B-4C7F-8B5B-B9BFB388FCDE}.Release|Any CPU.Build.0 = Release
 		{8F56633B-043B-4C7F-8B5B-B9BFB388FCDE}.Release|Mixed Platforms.ActiveCfg = Release
+		{8F56633B-043B-4C7F-8B5B-B9BFB388FCDE}.Release|Mixed Platforms.Build.0 = Release
 		{8F56633B-043B-4C7F-8B5B-B9BFB388FCDE}.Release|Win32.ActiveCfg = Release
 		{8F56633B-043B-4C7F-8B5B-B9BFB388FCDE}.Release|x64.ActiveCfg = Release
 		{8F56633B-043B-4C7F-8B5B-B9BFB388FCDE}.Release|x64.Build.0 = Release
@@ -68,5 +73,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {EA355D62-62D6-481E-B203-E02212D307D2}
 	EndGlobalSection
 EndGlobal
