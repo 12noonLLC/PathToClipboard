@@ -15,26 +15,26 @@
     {
         "Entry"
         {
-        "MsmKey" = "8:_9CA6FBF456A346E3B28C83E70D8918BD"
+        "MsmKey" = "8:_4AD7F036141042BB83EDA8041B3DDC93"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_CB8526AF9406417AB7D04C15DA0DA095"
+        "MsmKey" = "8:_8ECE034A9FBC489290381B07949B3A5D"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_CB8526AF9406417AB7D04C15DA0DA095"
+        "OwnerKey" = "8:_8ECE034A9FBC489290381B07949B3A5D"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_9CA6FBF456A346E3B28C83E70D8918BD"
+        "OwnerKey" = "8:_4AD7F036141042BB83EDA8041B3DDC93"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -82,7 +82,7 @@
         "DisplayName" = "8:Release"
         "IsDebugOnly" = "11:FALSE"
         "IsReleaseOnly" = "11:TRUE"
-        "OutputFilename" = "8:Release\\pathtoclipboard.msi"
+        "OutputFilename" = "8:Release\\pathtoclipboard32.msi"
         "PackageFilesAs" = "3:2"
         "PackageFileSize" = "3:-2147483648"
         "CabType" = "3:1"
@@ -101,10 +101,10 @@
             "ComponentsUrl" = "8:"
                 "Items"
                 {
-                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.7.2"
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.8"
                     {
-                    "Name" = "8:Microsoft .NET Framework 4.7.2 (x86 and x64)"
-                    "ProductCode" = "8:.NETFramework,Version=v4.7.2"
+                    "Name" = "8:Microsoft .NET Framework 4.8 (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.8"
                     }
                 }
             }
@@ -129,7 +129,7 @@
                 {
                 "Name" = "8:.NET Framework"
                 "Message" = "8:[VSDNETMSG]"
-                "FrameworkVersion" = "8:.NETFramework,Version=v4.7.2"
+                "FrameworkVersion" = "8:.NETFramework,Version=v4.8"
                 "AllowLaterVersions" = "11:FALSE"
                 "InstallUrl" = "8:http://go.microsoft.com/fwlink/?LinkId=9832"
                 }
@@ -183,14 +183,14 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:12noon PathToClipboard"
         "ProductCode" = "8:{7E4E24FB-FC53-4003-8BDF-8AA0A2A5086D}"
-        "PackageCode" = "8:{8B8FF44E-ACDA-4411-AC0D-4052B39F3C2E}"
+        "PackageCode" = "8:{CB1006E6-D92A-4659-B0E4-2CBC28193FBC}"
         "UpgradeCode" = "8:{CD10448D-7925-4F4E-AD20-3D1C23042273}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:TRUE"
-        "ProductVersion" = "8:1.5.122"
+        "ProductVersion" = "8:1.6.126"
         "Manufacturer" = "8:12noon"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:http://12noon.com"
@@ -738,9 +738,37 @@
         }
         "ProjectOutput"
         {
-            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_9CA6FBF456A346E3B28C83E70D8918BD"
+            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_4AD7F036141042BB83EDA8041B3DDC93"
             {
-            "SourcePath" = "8:..\\obj\\Release\\PathToClipboard.dll"
+            "SourcePath" = "8:..\\obj\\x86\\Release\\PathToClipboard.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_457965579E8E47EB8F6B7722A3287B03"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            "ProjectOutputGroupRegister" = "3:1"
+            "OutputConfiguration" = "8:Release|x86"
+            "OutputGroupCanonicalName" = "8:Built"
+            "OutputProjectGuid" = "8:{A76C8569-6D8B-499E-BBBA-1482A51CD367}"
+            "ShowKeyOutput" = "11:TRUE"
+                "ExcludeFilters"
+                {
+                }
+            }
+            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_8ECE034A9FBC489290381B07949B3A5D"
+            {
+            "SourcePath" = "8:..\\obj\\x86\\Release\\PathToClipboard.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_38FCB6ED95F64F4898401C2698A63A6D"
@@ -758,35 +786,7 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             "ProjectOutputGroupRegister" = "3:1"
-            "OutputConfiguration" = "8:Release|Any CPU"
-            "OutputGroupCanonicalName" = "8:Built"
-            "OutputProjectGuid" = "8:{A76C8569-6D8B-499E-BBBA-1482A51CD367}"
-            "ShowKeyOutput" = "11:TRUE"
-                "ExcludeFilters"
-                {
-                }
-            }
-            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_CB8526AF9406417AB7D04C15DA0DA095"
-            {
-            "SourcePath" = "8:..\\obj\\Release\\PathToClipboard.dll"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_457965579E8E47EB8F6B7722A3287B03"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            "ProjectOutputGroupRegister" = "3:2"
-            "OutputConfiguration" = "8:Release|Any CPU"
+            "OutputConfiguration" = "8:Release|x86"
             "OutputGroupCanonicalName" = "8:Built"
             "OutputProjectGuid" = "8:{A76C8569-6D8B-499E-BBBA-1482A51CD367}"
             "ShowKeyOutput" = "11:TRUE"
