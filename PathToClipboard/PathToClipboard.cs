@@ -1,10 +1,8 @@
 using System;
-using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using System.Text;
 
-using System.Runtime.InteropServices;
-
-namespace PathToClipboard	// WHY: PathToClipboardExtension doesn't work
+namespace PathToClipboard  // WHY: PathToClipboardExtension doesn't work
 {
 	// Generate a new GUID and use it below in the class.
 	[ClassInterface(ClassInterfaceType.None)]
@@ -28,7 +26,7 @@ namespace PathToClipboard	// WHY: PathToClipboardExtension doesn't work
 		/// <param name="menuContext"></param>
 		/// <param name="filepaths"></param>
 		/// <returns>True if it adds any commands; false if not.</returns>
-		override protected bool AddMenuCommands(Win32Functions.Wrappers.Menu menuContext, System.Collections.Specialized.StringCollection filepaths)
+		protected override bool AddMenuCommands(Win32Functions.Wrappers.Menu menuContext, System.Collections.Specialized.StringCollection filepaths)
 		{
 			if (filepaths.Count == 0)
 			{
@@ -64,7 +62,9 @@ namespace PathToClipboard	// WHY: PathToClipboardExtension doesn't work
 			foreach (string strFilepath in filepaths)
 			{
 				if (strFilepath != filepaths[0])
+				{
 					menuPopup.AppendMenuSeparator();
+				}
 
 				// C:\bin\test.txt
 				menuPopup.AppendMenuCommand(String.Format(_fmtMenuCommandPath, strFilepath), MyCommandHandler, strFilepath);
@@ -95,17 +95,17 @@ namespace PathToClipboard	// WHY: PathToClipboardExtension doesn't work
 			return true;
 		}
 
-		override protected string GetCommandStringVerb()
+		protected override string GetCommandStringVerb()
 		{
 			return _verb;
 		}
 
-		override protected string GetCommandStringCanonicalVerb()
+		protected override string GetCommandStringCanonicalVerb()
 		{
 			return _verbCanonicalName;
 		}
 
-		override protected string GetCommandStringHelp(uint ixCmd)
+		protected override string GetCommandStringHelp(uint ixCmd)
 		{
 			return _verbHelpText;
 		}
@@ -124,7 +124,7 @@ namespace PathToClipboard	// WHY: PathToClipboardExtension doesn't work
 			System.Windows.Forms.Clipboard.SetText(s.ToString());
 		}
 
-		#endregion
+		#endregion Menu Handlers
 
 		#region Registration
 		/*
@@ -137,21 +137,21 @@ namespace PathToClipboard	// WHY: PathToClipboardExtension doesn't work
 		 * Directory
 		 * Folder
 		 */
-		static private string[] _filetypes = new string[] { "AllFilesystemObjects" };
+		private static readonly string[] _filetypes = new string[] { "AllFilesystemObjects" };
 
 		// REF: http://www.codeproject.com/Articles/1490/Creating-a-shell-extension-with-C
 		[ComRegisterFunction()]
-		static public void RegisterServer(Type t)
+		public static void RegisterServer(Type t)
 		{
-			ShellExtension.ContextMenu.RegisterServerHelper(t, _filetypes);
+			RegisterServerHelper(t, _filetypes);
 		}
 
 		[ComUnregisterFunction()]
-		static public void UnregisterServer(Type t)
+		public static void UnregisterServer(Type t)
 		{
-			ShellExtension.ContextMenu.UnregisterServerHelper(t, _filetypes);
+			UnregisterServerHelper(t, _filetypes);
 		}
 
-		#endregion
+		#endregion Registration
 	}
 }

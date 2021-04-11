@@ -1,9 +1,6 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
-
-//using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Text;
 
 
 namespace MyCOMDefinitions
@@ -31,9 +28,9 @@ namespace MyCOMDefinitions
 		HELPTEXTW =		0x00000005,     // help text (unicode version)
 		VALIDATEW =		0x00000006,     // validate command exists (unicode)
 		UNICODE =		0x00000004,     // for bit testing - Unicode string
-		VERB =			GCS.VERBA,
-		HELPTEXT =		GCS.HELPTEXTA,
-		VALIDATE =		GCS.VALIDATEA
+		VERB = VERBA,
+		HELPTEXT = HELPTEXTA,
+		VALIDATE = VALIDATEA
 	}
 
 	[StructLayout(LayoutKind.Sequential, CharSet=CharSet.Unicode)]

@@ -1,3 +1,7 @@
+using System;
+using System.Runtime.InteropServices;
+using System.Text;
+
 /*
  * Must register as a COM object:
  * C:\Windows\Microsoft.NET\Framework64\v2.0.50727\RegAsm.exe /v MyAssembly.dll
@@ -25,12 +29,6 @@
  * Customizing a Shortcut Menu Using Dynamic Verbs
  * http://msdn.microsoft.com/en-us/library/ee453696.aspx
  */
-
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-using System.Runtime.InteropServices;
 
 namespace ShellExtension
 {
@@ -111,7 +109,9 @@ namespace ShellExtension
 				for (uint ix = 0; ix < nSelected; ++ix)
 				{
 					if (Win32Functions.Imports.DragQueryFile(hDrop, ix, sb, (uint)sb.Capacity) != 0)
+					{
 						_filepaths.Add(sb.ToString());
+					}
 				}
 			}
 			catch (Exception)
@@ -123,7 +123,7 @@ namespace ShellExtension
 			}
 		}
 
-		#endregion
+		#endregion IShellExtInit Members
 
 		#region IContextMenu Members
 
@@ -191,7 +191,7 @@ namespace ShellExtension
 		/// }
 		/// </code>
 		/// </example>
-		abstract protected bool AddMenuCommands(Win32Functions.Wrappers.Menu menuContext, System.Collections.Specialized.StringCollection filepaths);
+		protected abstract bool AddMenuCommands(Win32Functions.Wrappers.Menu menuContext, System.Collections.Specialized.StringCollection filepaths);
 
 
 		void MyCOMDefinitions.IContextMenu.InvokeCommand(IntPtr pici)
@@ -365,7 +365,7 @@ namespace ShellExtension
 		/// Override this function to return specific text for the verb.
 		/// </summary>
 		/// <returns>The string to use as the verb</returns>
-		virtual protected string GetCommandStringVerb()
+		protected virtual string GetCommandStringVerb()
 		{
 			return string.Empty;
 		}
@@ -374,7 +374,7 @@ namespace ShellExtension
 		/// Override this function to return specific text for the canonical verb.
 		/// </summary>
 		/// <returns>The string to use as the verb</returns>
-		virtual protected string GetCommandStringCanonicalVerb()
+		protected virtual string GetCommandStringCanonicalVerb()
 		{
 			return string.Empty;
 		}
@@ -386,12 +386,12 @@ namespace ShellExtension
 		/// </summary>
 		/// <param name="ixCmd">The offset of the menu command being hovered over.</param>
 		/// <returns>The string to display in the status bar</returns>
-		virtual protected string GetCommandStringHelp(uint ixCmd)
+		protected virtual string GetCommandStringHelp(uint ixCmd)
 		{
 			return string.Empty;
 		}
 
-		#endregion
+		#endregion IContextMenu Members
 
 
 		#region Registration
@@ -456,14 +456,14 @@ namespace ShellExtension
 																  IntPtr dwItem2);
 					 */
 
-					System.Console.WriteLine("Registered file type {0} (from {1})", keynameFileType, filetype);
+					Console.WriteLine($"Registered file type {keynameFileType} (from {filetype})");
 				}
 
-				System.Console.WriteLine("Registered GUID {0}", strGuid);
+				Console.WriteLine($"Registered GUID {strGuid}");
 			}
 			catch (Exception ex)
 			{
-				System.Console.WriteLine("Error registering extension: {0}", ex.Message);
+				Console.WriteLine($"Error registering extension: {ex.Message}");
 			}
 		}
 
@@ -483,7 +483,7 @@ namespace ShellExtension
 				{
 					string keynameFileType = GetFileType(filetype);
 					Microsoft.Win32.Registry.ClassesRoot.DeleteSubKeyTree(keynameFileType + @"\shellex\ContextMenuHandlers\" + strGuid);
-					System.Console.WriteLine("Unregistered file type {0} (from {1})", keynameFileType, filetype);
+					Console.WriteLine($"Unregistered file type {keynameFileType} (from {filetype})");
 				}
 
 				/*
@@ -493,11 +493,11 @@ namespace ShellExtension
 				//key.DeleteValue(strGuid);
 				//key.Close();
 
-				System.Console.WriteLine("Unregistered GUID {0}", strGuid);
+				Console.WriteLine($"Unregistered GUID {strGuid}");
 			}
 			catch (Exception ex)
 			{
-				System.Console.WriteLine("Error unregistering extension: {0}", ex.Message);
+				Console.WriteLine($"Error unregistering extension: {ex.Message}");
 			}
 		}
 
@@ -515,7 +515,7 @@ namespace ShellExtension
 						// If the key exists and its default value is not empty, use 
 						// the ProgID as the file type.
 						string defaultVal = keyType.GetValue(null) as string;
-						if (!string.IsNullOrEmpty(defaultVal))
+						if (!String.IsNullOrEmpty(defaultVal))
 						{
 							return defaultVal;
 						}
@@ -525,6 +525,6 @@ namespace ShellExtension
 			return filetype;
 		}
 
-		#endregion
+		#endregion Registration
 	}
 }

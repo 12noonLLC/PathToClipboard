@@ -205,7 +205,7 @@ namespace Win32Functions
 
 /*http://www.pinvoke.net/default.aspx/Structures/MENUITEMINFO.html
 */		// return the size of the structure
-		static internal UInt32 SizeOf
+		internal static UInt32 SizeOf
 		{
 			// 48 bytes on Windows XP SP2
 			// 80 bytes on Windows Server 2003 64-bit
@@ -347,7 +347,7 @@ namespace Win32Functions
 					// Pass IntPtr.Size because the API doesn't like null, even though
 					// size is zero.  We know that IntPtr.Size will be
 					// aligned correctly.
-					int apiRetVal = Win32Functions.Imports.WNetGetUniversalName(strFilepath, (int)Win32Functions.NAME_INFO_LEVEL.UNIVERSAL_NAME_INFO_LEVEL, (IntPtr)IntPtr.Size, ref size);
+					int apiRetVal = Imports.WNetGetUniversalName(strFilepath, (int)NAME_INFO_LEVEL.UNIVERSAL_NAME_INFO_LEVEL, (IntPtr)IntPtr.Size, ref size);
 					// If the return value is not ERROR_MORE_DATA, then raise an exception.
 					if (apiRetVal != Constants.ERROR_MORE_DATA)
 					{
@@ -362,7 +362,7 @@ namespace Win32Functions
 					//UNIVERSAL_NAME_INFO uni = new UNIVERSAL_NAME_INFO();
 					//cch = (UInt32)Marshal.SizeOf(uni);
 					//UInt32 rc = Win32Functions.Imports.WNetGetUniversalName(strFilepath, Win32Functions.NAME_INFO_LEVEL.UNIVERSAL_NAME_INFO_LEVEL, ref uni, ref cch);
-					apiRetVal = Win32Functions.Imports.WNetGetUniversalName(strFilepath, (int)Win32Functions.NAME_INFO_LEVEL.UNIVERSAL_NAME_INFO_LEVEL, pBuffer, ref size);
+					apiRetVal = Imports.WNetGetUniversalName(strFilepath, (int)NAME_INFO_LEVEL.UNIVERSAL_NAME_INFO_LEVEL, pBuffer, ref size);
 					if (apiRetVal != Constants.NOERROR)
 					{
 						// Throw an exception.
@@ -392,8 +392,8 @@ namespace Win32Functions
 		 */
 		public class Menu
 		{
-			static private uint _idFirstCommand = 0;
-			static public uint FirstCommand
+			private static uint _idFirstCommand = 0;
+			public static uint FirstCommand
 			{
 				get { return _idFirstCommand; }
 				set
@@ -411,8 +411,8 @@ namespace Win32Functions
 				}
 			}
 
-			static public uint NextCommandID { get; private set; }
-			static public uint MenuPositionIx { get; set; }
+			public static uint NextCommandID { get; private set; }
+			public static uint MenuPositionIx { get; set; }
 	
 			//----------------------------------------------------------------
 
@@ -440,7 +440,7 @@ namespace Win32Functions
 			 * This collection maps a command offset (not ID) to a delegate and the data to pass to the delegate
 			 */
 			public delegate void MenuDelegate(uint id, object data);
-			static protected System.Collections.Generic.Dictionary<uint, System.Collections.Generic.KeyValuePair<MenuDelegate, object>> _commandhandlers = new System.Collections.Generic.Dictionary<uint, System.Collections.Generic.KeyValuePair<MenuDelegate, object>>();
+			protected static System.Collections.Generic.Dictionary<uint, System.Collections.Generic.KeyValuePair<MenuDelegate, object>> _commandhandlers = new System.Collections.Generic.Dictionary<uint, System.Collections.Generic.KeyValuePair<MenuDelegate, object>>();
 
 
 			/// <summary>
@@ -451,7 +451,7 @@ namespace Win32Functions
 			/// <param name="handler">Delegate to call when this menu command is selected</param>
 			/// <param name="data">Data associated with this menu command and passed to delegate</param>
 			/// <returns>The 0-based offset of the command id.</returns>
-			static private uint AddMenuCommandHandler<T>(MenuDelegate handler, T data)
+			private static uint AddMenuCommandHandler<T>(MenuDelegate handler, T data)
 			{
 				System.Diagnostics.Debug.Assert(handler != null, "The passed handler cannot be null.");
 				System.Diagnostics.Debug.Assert(_idFirstCommand != 0, "FirstCommand must be initialized.");
@@ -480,7 +480,7 @@ namespace Win32Functions
 			/// </summary>
 			/// <param name="offsetCommand">Offset of menu command</param>
 			/// <returns>True if it finds the command offset and calls its handler.</returns>
-			static public bool CallCommandHandler(uint offsetCommand)
+			public static bool CallCommandHandler(uint offsetCommand)
 			{
 				/*
 				 * It's either this or catch KeyNotFoundException thrown by dic[key].
@@ -502,7 +502,7 @@ namespace Win32Functions
 
 			public void AppendMenuSeparator()
 			{
-				bool brc = Win32Functions.Imports.AppendMenu((IntPtr)_hMenu, Win32Functions.MF_WIN40.SEPARATOR, IntPtr.Zero, string.Empty);
+				bool brc = Imports.AppendMenu((IntPtr)_hMenu, MF_WIN40.SEPARATOR, IntPtr.Zero, string.Empty);
 				System.Diagnostics.Debug.Assert(brc, "AppendMenu (separator) failed.");
 				++NextCommandID;
 			}
@@ -511,7 +511,7 @@ namespace Win32Functions
 			{
 				System.Diagnostics.Debug.Assert(strText != string.Empty, "Text cannot be empty.");
 
-				bool brc = Win32Functions.Imports.AppendMenu((IntPtr)_hMenu, Win32Functions.MF_WIN40.STRING, (IntPtr)Menu.NextCommandID, strText);
+				bool brc = Imports.AppendMenu((IntPtr)_hMenu, MF_WIN40.STRING, (IntPtr)NextCommandID, strText);
 				System.Diagnostics.Debug.Assert(brc, "AppendMenu failed.");
 
 				return AddMenuCommandHandler(handler, data);
@@ -521,7 +521,7 @@ namespace Win32Functions
 			{
 				System.Diagnostics.Debug.Assert(menuPopup != null, "The menu cannot be null.");
 
-				bool brc = Win32Functions.Imports.AppendMenu(_hMenu, Win32Functions.MF_WIN40.POPUP, menuPopup, menuPopup.Text);
+				bool brc = Imports.AppendMenu(_hMenu, MF_WIN40.POPUP, menuPopup, menuPopup.Text);
 				System.Diagnostics.Debug.Assert(brc, "AppendMenu failed.");
 				++NextCommandID;		// this may not be necessary for popups, but I want to be safe
 			}
@@ -529,7 +529,7 @@ namespace Win32Functions
 
 			public void InsertMenuSeparator()
 			{
-				bool brc = Win32Functions.Imports.InsertMenu((IntPtr)_hMenu, Menu.MenuPositionIx, Win32Functions.MF_WIN40.SEPARATOR, IntPtr.Zero, string.Empty);
+				bool brc = Imports.InsertMenu((IntPtr)_hMenu, MenuPositionIx, MF_WIN40.SEPARATOR, IntPtr.Zero, string.Empty);
 				System.Diagnostics.Debug.Assert(brc, "InsertMenu (separator) failed.");
 				++NextCommandID;
 				++MenuPositionIx;
@@ -539,7 +539,7 @@ namespace Win32Functions
 			{
 				System.Diagnostics.Debug.Assert(strText != string.Empty, "Text cannot be empty.");
 
-				bool brc = Win32Functions.Imports.InsertMenu((IntPtr)_hMenu, Menu.MenuPositionIx, Win32Functions.MF_WIN40.BYPOSITION | Win32Functions.MF_WIN40.STRING, (IntPtr)Menu.NextCommandID, strText);
+				bool brc = Imports.InsertMenu((IntPtr)_hMenu, MenuPositionIx, MF_WIN40.BYPOSITION | MF_WIN40.STRING, (IntPtr)NextCommandID, strText);
 				System.Diagnostics.Debug.Assert(brc, "InsertMenuCommand failed.");
 				++MenuPositionIx;
 
@@ -550,7 +550,7 @@ namespace Win32Functions
 			{
 				System.Diagnostics.Debug.Assert(menuPopup != null, "The menu cannot be null.");
 
-				bool brc = Win32Functions.Imports.InsertMenu(_hMenu, Menu.MenuPositionIx, Win32Functions.MF_WIN40.BYPOSITION | Win32Functions.MF_WIN40.POPUP, menuPopup, menuPopup.Text);
+				bool brc = Imports.InsertMenu(_hMenu, MenuPositionIx, MF_WIN40.BYPOSITION | MF_WIN40.POPUP, menuPopup, menuPopup.Text);
 				System.Diagnostics.Debug.Assert(brc);
 				++NextCommandID;		// this may not be necessary for popups, but I want to be safe
 				++MenuPositionIx;
@@ -568,7 +568,7 @@ namespace Win32Functions
 
 
 			public MenuPopup(string strText)
-				: base(Win32Functions.Imports.CreatePopupMenu())
+				: base(Imports.CreatePopupMenu())
 			{
 				System.Diagnostics.Debug.Assert(strText.Length > 0, "The menu text cannot be empty.");
 				_strText = strText;
