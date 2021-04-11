@@ -1,0 +1,55 @@
+desktop.ini
+Thumbs.db
+
+*.bak
+*.dll
+*.exe
+*.ipch
+*.json
+*.lib
+*.msi
+*.pdb
+*.pdf
+*.resx
+*.url
+*.user
+*.vs10x
+*.zip
+* - Copy.*
+* - Copy (?).*
+
+**/.vs/
+**/Win32/
+**/x64/
+**/x86/
+**/Debug/
+**/Debug Console/
+**/Release/
+**/Release Console/
+**/obj/
+**/bin/
+**/Generated Files/
+
+CopyPath_Approved.reg
+PathToClipboard/!How to Deploy a New Version.txt
+PathToClipboard/CLSID.txt
+PathToClipboard/DocID.txt
+PathToClipboard/Logfile_P2C.CSV
+PathToClipboard/Logfile_P2C.PML
+PathToClipboard/PFX password 'piffle'.txt
+PathToClipboard/Registry Settings findings.txt
+PathToClipboard/fusioninstall.cs
+PathToClipboard/shellex.txt
+
+BatchResults/
+CSShellExtContextMenuHandler/
+DateParser/
+PathToClipboard/Registry Settings/
+RatingColumn/
+SimpleContextMenu/
+WNetGetUniversalName/
+
+
+#
+#	Added by SourceTree
+#
