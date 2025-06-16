@@ -12,20 +12,20 @@ using System.Text;
  * "C:\Program Files (x86)\Microsoft Visual Studio 8\SDK\v2.0\Bin\gacutil.exe" /if MyAssembly.dll
  *
  * Associated with HKCR/ * shellex/ContextMenuHandlers/
- * 
+ *
  * http://1code.codeplex.com
  * http://1code.codeplex.com/SourceControl/changeset/view/55574#1315972
- * 
+ *
  * Writing Windows Shell Extension with .NET Framework 4
  * http://blogs.msdn.com/b/codefx/archive/2010/09/14/writing-windows-shell-extension-with-net-framework-4-c-vb-net-part-1.aspx
  * http://blogs.msdn.com/b/codefx/archive/2010/10/10/writing-windows-shell-extension-with-net-framework-4-c-vb-net-part-2.aspx
- * 
+ *
  * Registering Shell Extension Handlers
  * http://msdn.microsoft.com/en-us/library/cc144110.aspx
  *
  * Creating Shortcut Menu Handlers
  * http://msdn.microsoft.com/en-us/library/cc144171.aspx
- * 
+ *
  * Customizing a Shortcut Menu Using Dynamic Verbs
  * http://msdn.microsoft.com/en-us/library/ee453696.aspx
  */
@@ -43,17 +43,17 @@ namespace ShellExtension
 
 		/*
 		 * 1 Implementing IShellExtInit
-		 * 
+		 *
 		 * After the context menu extension COM object is instantiated, the IShellExtInit.Initialize method is called.
 		 * IShellExtInit.Initialize supplies the context menu extension with an IDataObject object that holds one or
 		 * more file names in CF_HDROP format. You can enumerate the selected files and folders through the
 		 * IDataObject object. If a failure HRESULT is returned (thrown) from IShellExtInit.Initialize, the context
 		 * menu extension will not be used.
-		 * 
+		 *
 		 * In the code sample, the FileContextMenuExt.Initialize method enumerates the selected files and folders.
 		 * If only one file is selected, the method stores the file name for later use. If more than one file or no file
 		 * are selected, the method throws an exception with the E_FAIL HRESULT to not use the context menu extension.
-		 * 
+		 *
 		 * http://blogs.msdn.com/b/codefx/archive/2010/09/14/writing-windows-shell-extension-with-net-framework-4-c-vb-net-part-1.aspx
 		 */
 		void MyCOMDefinitions.IShellExtInit.Initialize(IntPtr pidlFolder, IntPtr lpdobj, IntPtr hKeyProgID)
@@ -184,7 +184,7 @@ namespace ShellExtension
 		/// menuPopup.InsertMenuSeparator();
 		/// menuPopup.AppendMenuCommand("Test insert SubMenu command 2", MyCommandHandler2);
 		/// menuContext.InsertMenuPopup(menuPopup);
-		/// 
+		///
 		/// public void MyCommandHandler1()
 		/// {
 		///	System.Windows.Forms.MessageBox.Show("Handler 1");
@@ -196,7 +196,7 @@ namespace ShellExtension
 
 		void MyCOMDefinitions.IContextMenu.InvokeCommand(IntPtr pici)
 		{
-//TODO: DELME & use below code (that's more accurate)
+//DELME & use below code (that's more accurate)
 			//try
 			//{
 			//   /*
@@ -235,11 +235,11 @@ namespace ShellExtension
 
 			bool isUnicode = false;
 
-			// Determine which structure is being passed in, CMINVOKECOMMANDINFO or 
-			// CMINVOKECOMMANDINFOEX based on the cbSize member of lpcmi. Although 
-			// the lpcmi parameter is declared in Shlobj.h as a CMINVOKECOMMANDINFO 
-			// structure, in practice it often points to a CMINVOKECOMMANDINFOEX 
-			// structure. This struct is an extended version of CMINVOKECOMMANDINFO 
+			// Determine which structure is being passed in, CMINVOKECOMMANDINFO or
+			// CMINVOKECOMMANDINFOEX based on the cbSize member of lpcmi. Although
+			// the lpcmi parameter is declared in Shlobj.h as a CMINVOKECOMMANDINFO
+			// structure, in practice it often points to a CMINVOKECOMMANDINFOEX
+			// structure. This struct is an extended version of CMINVOKECOMMANDINFO
 			// and has additional members that allow Unicode strings to be passed.
 			MyCOMDefinitions.CMINVOKECOMMANDINFO ici = (MyCOMDefinitions.CMINVOKECOMMANDINFO)Marshal.PtrToStructure(pici, typeof(MyCOMDefinitions.CMINVOKECOMMANDINFO));
 			MyCOMDefinitions.CMINVOKECOMMANDINFOEX iciex = new MyCOMDefinitions.CMINVOKECOMMANDINFOEX();
@@ -249,7 +249,7 @@ namespace ShellExtension
 				{
 					/*
 					 * REF: All-In-One Code Framework\Visual Studio 2010\CSShellExtContextMenuHandler\
-					 * 
+					 *
 					 * This code seems correct, comparing with the above Microsoft sample.
 					 * However, this marshaling throws an exception.
 					 * We don't use the lpVerb[W], so we can ignore it, but it's troubling.
@@ -261,17 +261,17 @@ namespace ShellExtension
 
 			// Determines whether the command is identified by its offset or verb.
 			// There are two ways to identify commands:
-			// 
-			//   1) The command's verb string 
+			//
+			//   1) The command's verb string
 			//   2) The command's identifier offset
-			// 
-			// If the high-order word of lpcmi->lpVerb (for the ANSI case) or 
-			// lpcmi->lpVerbW (for the Unicode case) is nonzero, lpVerb or lpVerbW 
-			// holds a verb string. If the high-order word is zero, the command 
+			//
+			// If the high-order word of lpcmi->lpVerb (for the ANSI case) or
+			// lpcmi->lpVerbW (for the Unicode case) is nonzero, lpVerb or lpVerbW
+			// holds a verb string. If the high-order word is zero, the command
 			// offset is in the low-order word of lpcmi->lpVerb.
 
-			// For the ANSI case, if the high-order word is not zero, the command's 
-			// verb string is in lpcmi->lpVerb. 
+			// For the ANSI case, if the high-order word is not zero, the command's
+			// verb string is in lpcmi->lpVerb.
 			if (!isUnicode && Win32Functions.Macros.HighWord(ici.lpVerb.ToInt32()) != 0)
 			{
 				// Is the verb supported by this context menu extension?
@@ -281,7 +281,7 @@ namespace ShellExtension
 					 * If we were really processing verbs, we'd have to:
 					 *		1. Add the verb to the Registry
 					 *		2. Call a different command handler to process the verb (not the command ID)
-					 *	
+					 *
 					 * Can pass useful things to the handler, such as: ici.hwnd
 					 */
 					if (Win32Functions.Wrappers.Menu.CallCommandHandler(0 /*dummy ID*/))
@@ -290,8 +290,8 @@ namespace ShellExtension
 					}
 				}
 			}
-			// For the Unicode case, if the high-order word is not zero, the 
-			// command's verb string is in lpcmi->lpVerbW. 
+			// For the Unicode case, if the high-order word is not zero, the
+			// command's verb string is in lpcmi->lpVerbW.
 			else if (isUnicode && Win32Functions.Macros.HighWord(iciex.lpVerbW.ToInt32()) != 0)
 			{
 				// Is the verb supported by this context menu extension?
@@ -301,7 +301,7 @@ namespace ShellExtension
 					 * If we were really processing verbs, we'd have to:
 					 *		1. Add the verb to the Registry
 					 *		2. Call a different command handler to process the verb (not the command ID)
-					 *	
+					 *
 					 * Can pass useful things to the handler, such as: ici.hwnd
 					 */
 					if (Win32Functions.Wrappers.Menu.CallCommandHandler(0 /*dummy ID*/))
@@ -310,7 +310,7 @@ namespace ShellExtension
 					}
 				}
 			}
-			// If the command cannot be identified through the verb string, then 
+			// If the command cannot be identified through the verb string, then
 			// check the identifier offset.
 			else
 			{
@@ -399,13 +399,13 @@ namespace ShellExtension
 		/*
 		 * These methods must be called by the derived class that is, ultimately, the extension.
 		 * They're invoked by regasm.exe.
-		 * 
+		 *
 		 * Creating Shell Extensions
 		 * http://msdn.microsoft.com/en-us/library/cc144067(VS.85).aspx
-		 * 
+		 *
 		 * Registering Shell Extension Handlers
 		 * http://msdn.microsoft.com/en-us/library/cc144110(VS.85).aspx
-		 * 
+		 *
 		 * Approved Shell Extensions
 		 * http://msdn.microsoft.com/en-us/library/ms812054.aspx
 		 */
@@ -425,7 +425,7 @@ namespace ShellExtension
 
 				/*
 				 * Associate all specified filetypes with this handler.
-				 * 
+				 *
 				 * Registry entry:
 				 *		HKCR\<filetype>\ContextMenuHandlers\
 				 */
@@ -446,13 +446,13 @@ namespace ShellExtension
 					/*
 					 * http://msdn.microsoft.com/en-us/library/bb762118.aspx
 					 * SHChangeNotify(SHCNE_ASSOCCHANGED, SHCNF_IDLIST, NULL, NULL)
-					 * 
+					 *
 					 * http://www.pinvoke.net/default.aspx/shell32.shchangenotify
-					 * 
+					 *
 					[DllImport("shell32.dll")]
-					static extern void SHChangeNotify(HChangeNotifyEventID wEventId, 
-																  HChangeNotifyFlags uFlags, 
-																  IntPtr dwItem1, 
+					static extern void SHChangeNotify(HChangeNotifyEventID wEventId,
+																  HChangeNotifyFlags uFlags,
+																  IntPtr dwItem1,
 																  IntPtr dwItem2);
 					 */
 
@@ -475,7 +475,7 @@ namespace ShellExtension
 			{
 				/*
 				 * Unassociate all filetypes associated with this handler.
-				 * 
+				 *
 				 * Registry entry:
 				 *		HKCR\<filetype>\ContextMenuHandlers\
 				 */
@@ -503,8 +503,8 @@ namespace ShellExtension
 
 		private static string GetFileType(string filetype)
 		{
-			// If fileType starts with '.', try to read the default value of the 
-			// HKCR\<File Type> key which contains the ProgID to which the file type 
+			// If fileType starts with '.', try to read the default value of the
+			// HKCR\<File Type> key which contains the ProgID to which the file type
 			// is linked.
 			if (filetype.StartsWith("."))
 			{
@@ -512,7 +512,7 @@ namespace ShellExtension
 				{
 					if (keyType != null)
 					{
-						// If the key exists and its default value is not empty, use 
+						// If the key exists and its default value is not empty, use
 						// the ProgID as the file type.
 						string defaultVal = keyType.GetValue(null) as string;
 						if (!String.IsNullOrEmpty(defaultVal))
