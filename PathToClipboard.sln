@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30002.166
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PathToClipboard", ".\PathToClipboard.csproj", "{A76C8569-6D8B-499E-BBBA-1482A51CD367}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PathToClipboard", ".\PathToClipboard\PathToClipboard.csproj", "{A76C8569-6D8B-499E-BBBA-1482A51CD367}"
 EndProject
 Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Setup_PathToClipboard", ".\Setup_PathToClipboard32\Setup_PathToClipboard32.vdproj", "{CBD93C8F-580F-4117-BD2E-6DEEBA63332E}"
 EndProject

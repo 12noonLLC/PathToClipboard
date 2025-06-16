@@ -30,26 +30,13 @@ Thumbs.db
 **/bin/
 **/Generated Files/
 
-CopyPath_Approved.reg
-PathToClipboard/!How to Deploy a New Version.txt
-PathToClipboard/CLSID.txt
-PathToClipboard/DocID.txt
-PathToClipboard/Logfile_P2C.CSV
-PathToClipboard/Logfile_P2C.PML
-PathToClipboard/PFX password 'piffle'.txt
-PathToClipboard/Registry Settings findings.txt
-PathToClipboard/fusioninstall.cs
-PathToClipboard/shellex.txt
+PUBLISH/
+Registry Settings/
 
-BatchResults/
-CSShellExtContextMenuHandler/
-DateParser/
-PathToClipboard/Registry Settings/
-RatingColumn/
-SimpleContextMenu/
-WNetGetUniversalName/
-
-
-#
-#	Added by SourceTree
-#
+\!How to Deploy a New Version.txt
+12noon Copy.txt
+CLSID.txt
+DocID.txt
+Registry Settings findings.txt
+fusioninstall.cs
+shellex.txt
